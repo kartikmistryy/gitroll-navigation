@@ -15,7 +15,14 @@ import {
   Users,
   User,
   Settings,
+  Home as HomeIcon,
+  MapPin,
+  Sparkles,
+  UserCircle,
+  HelpCircle,
+  LogOut,
 } from 'lucide-react';
+import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -32,12 +39,26 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -91,6 +112,13 @@ const dashboardMeta: Record<
   repo: { label: 'Repo', icon: GitBranch },
   user: { label: 'Users', icon: User },
 };
+
+// Main navigation items
+const mainNavItems = [
+  { title: 'Home', url: '#', icon: HomeIcon },
+  { title: 'Skill Maps', url: '#', icon: MapPin },
+  { title: 'Ask AI', url: '#', icon: Sparkles },
+];
 
 type PageLink = {
   label: string;
@@ -243,25 +271,6 @@ const pagesByDashboard: Record<DashboardKind, PageSection[]> = {
   ],
 };
 
-function useOnClickOutside(
-  ref: React.RefObject<HTMLElement | null>,
-  handler: (event: MouseEvent | TouchEvent) => void,
-) {
-  React.useEffect(() => {
-    const listener = (event: MouseEvent | TouchEvent) => {
-      const el = ref.current;
-      if (!el || el.contains(event.target as Node)) return;
-      handler(event);
-    };
-    document.addEventListener('mousedown', listener);
-    document.addEventListener('touchstart', listener);
-    return () => {
-      document.removeEventListener('mousedown', listener);
-      document.removeEventListener('touchstart', listener);
-    };
-  }, [ref, handler]);
-}
-
 function DashboardSwitcher({
   dashboard,
   entity,
@@ -273,8 +282,6 @@ function DashboardSwitcher({
 }) {
   const [open, setOpen] = React.useState(false);
   const [activeKind, setActiveKind] = React.useState<DashboardKind>(dashboard);
-  const ref = React.useRef<HTMLDivElement | null>(null);
-  useOnClickOutside(ref, () => setOpen(false));
 
   const meta = dashboardMeta[dashboard];
   const Icon = meta.icon;
@@ -285,33 +292,38 @@ function DashboardSwitcher({
   }, [dashboard, open]);
 
   return (
-    <div ref={ref} className="relative h-fit">
-      <Button
-        variant="ghost"
-        className="w-full justify-between gap-2 h-12 px-2"
-        onClick={() => setOpen((v) => !v)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-      >
-        <span className="flex items-center gap-2 min-w-0">
-          <Icon className="size-4 shrink-0" />
-          <span className="truncate text-left">
-            <span className="text-sidebar-foreground/70 text-xs font-medium">
-              {meta.label}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          className="w-full justify-between gap-2 h-12 px-2"
+          aria-haspopup="menu"
+          aria-expanded={open}
+        >
+          <span className="flex items-center gap-2 min-w-0">
+            <Icon className="size-4 shrink-0" />
+            <span className="truncate text-left">
+              <span className="text-sidebar-foreground/70 text-xs font-medium">
+                {meta.label}
+              </span>
+              <span className="block text-sm font-medium">{entity.name}</span>
             </span>
-            <span className="block text-sm font-medium">{entity.name}</span>
           </span>
-        </span>
-        <ChevronDown
-          className={cn('size-4 shrink-0 transition-transform', open && 'rotate-180')}
-        />
-      </Button>
-
-      {open && (
+          <ChevronDown
+            className={cn('size-4 shrink-0 transition-transform', open && 'rotate-180')}
+          />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        className="w-fit p-0 max-h-[280px] overflow-hidden"
+        side="bottom"
+        sideOffset={4}
+      >
         <div
           role="menu"
           aria-label="Switch dashboard"
-          className="bg-popover text-popover-foreground border-sidebar-border absolute left-0 z-50 mt-1 max-h-[280px] w-fit overflow-hidden rounded-lg border shadow-sm"
+          className="bg-popover text-popover-foreground"
         >
           <div className="grid w-fit grid-cols-[120px_1fr] gap-5 divide-x divide-sidebar-border">
             {/* Left: parent triggers */}
@@ -377,8 +389,8 @@ function DashboardSwitcher({
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 
@@ -490,6 +502,29 @@ function VariantTwoContent() {
         </SidebarHeader>
 
         <SidebarContent className="overflow-y-auto">
+          {/* Main Navigation */}
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-0">
+                {mainNavItems.map((item) => (
+                  <SidebarMenuItem className="h-10 font-medium" key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <Link href={item.url} className="h-10 font-medium">
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+
+          <div className="px-2 py-2">
+            <Separator />
+          </div>
+
+          {/* Page Sections */}
           <SidebarGroup>
             <SidebarMenu>
               {pages.map((section) => {
@@ -574,37 +609,49 @@ function VariantTwoContent() {
             </SidebarMenu>
           </SidebarGroup>
 
-          <div className="px-2 py-2">
-            <Separator />
-          </div>
-
-          <SidebarGroup>
-            <div className="px-2 text-xs text-sidebar-foreground/70 font-medium">
-              Context
-            </div>
-            <div className="px-2 pt-1 text-sm">
-              <div className="truncate">
-                {dashboardMeta[dashboard].label}: <span className="font-medium">{entity.name}</span>
-              </div>
-              <div className="truncate text-sidebar-foreground/70">
-                Page: <span className="text-sidebar-foreground">{activePage}</span>
-              </div>
-            </div>
-          </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="border-t border-sidebar-border">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href="/" className="flex items-center gap-2">
-                  <span className="text-sidebar-foreground/70 text-xs font-medium">
-                    Back to Variant One
-                  </span>
-                </Link>
+        <SidebarFooter className="border-t border-sidebar-border p-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton className="h-auto w-full py-2">
+                <Image
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+                  alt="John Doe"
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover"
+                  unoptimized
+                />
+                <div className="flex flex-1 flex-col items-start text-left">
+                  <span className="text-sm font-medium">John Doe</span>
+                  <span className="text-xs text-muted-foreground">Admin</span>
+                </div>
+                <ChevronRight className="size-4 text-muted-foreground" />
               </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="top" className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <UserCircle className="size-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings className="size-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <HelpCircle className="size-4" />
+                <span>Help & Support</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive focus:text-destructive">
+                <LogOut className="size-4" />
+                <span>Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </SidebarFooter>
       </Sidebar>
 

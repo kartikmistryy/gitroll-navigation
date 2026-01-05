@@ -1,17 +1,31 @@
 "use client";
 
+import * as React from "react";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Building2,
-  Users,
   GitBranch,
-  User,
   ChevronRight,
+  ChevronDown,
   Settings,
   LogOut,
+  LayoutDashboard,
+  Sparkles,
+  MapPin,
+  MoreHorizontal,
+  Home as HomeIcon,
+  UserCircle,
+  HelpCircle,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -23,28 +37,25 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
   SidebarInset,
-  SidebarSeparator,
 } from "@/components/animate-ui/components/radix/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-// Sub-pages for each dashboard type
-const orgSubPages = [
-  { label: "Overview", href: "/org/overview" },
-  { label: "Benchmarks", href: "/org/benchmarks" },
-  { label: "Risks", href: "/org/risks" },
-  { label: "Quality", href: "/org/quality" },
-  { label: "People", href: "/org/people" },
+// Organizations
+const organizations = [
+  { id: 'gitroll', name: 'GitRoll' },
+  { id: 'acme', name: 'Acme Inc' },
+  { id: 'techcorp', name: 'TechCorp' },
+];
+
+// Main navigation items
+const mainNavItems = [
+  { title: 'Home', url: '#', icon: HomeIcon },
+  { title: 'Skill Maps', url: '#', icon: MapPin },
+  { title: 'Ask AI', url: '#', icon: Sparkles },
 ];
 
 const teams = [
@@ -80,27 +91,11 @@ const teams = [
   },
 ];
 
-const teamSubPages = [
-  { label: "Overview", href: "overview" },
-  { label: "Benchmarks", href: "benchmarks" },
-  { label: "Risks", href: "risks" },
-  { label: "Quality", href: "quality" },
-  { label: "Members", href: "members" },
-];
-
 const repositories = [
   { id: "web-app", name: "web-app" },
   { id: "api-server", name: "api-server" },
   { id: "mobile-app", name: "mobile-app" },
   { id: "shared-libs", name: "shared-libs" },
-];
-
-const repoSubPages = [
-  { label: "Overview", href: "overview" },
-  { label: "Benchmarks", href: "benchmarks" },
-  { label: "Risks", href: "risks" },
-  { label: "Quality", href: "quality" },
-  { label: "Contributors", href: "contributors" },
 ];
 
 const people = [
@@ -156,331 +151,259 @@ const people = [
   },
 ];
 
-const userSubPages = [
-  { label: "Overview", href: "overview" },
-  { label: "Benchmarks", href: "benchmarks" },
-  { label: "Contributions", href: "contributions" },
-  { label: "Activity", href: "activity" },
-];
-
 export default function Home() {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    organization: true,
-    teams: false,
-    repositories: false,
-    people: false,
-  });
+  const [selectedOrg, setSelectedOrg] = useState(organizations[0]!);
+  const [showAllTeams, setShowAllTeams] = useState(false);
+  const [showAllRepos, setShowAllRepos] = useState(false);
+  const [showAllPeople, setShowAllPeople] = useState(false);
 
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
-
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
-  const toggleItem = (item: string) => {
-    setExpandedItems((prev) => ({ ...prev, [item]: !prev[item] }));
-  };
+  const visibleTeams = showAllTeams ? teams : teams.slice(0, 3);
+  const visibleRepos = showAllRepos ? repositories : repositories.slice(0, 2);
+  const visiblePeople = showAllPeople ? people : people.slice(0, 2);
 
   return (
     <SidebarProvider>
       <Sidebar variant="sidebar" collapsible="offcanvas">
-        <SidebarHeader className="border-b border-sidebar-border">
-          <div className="flex items-center gap-2 px-2 py-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-              GR
-            </div>
-            <span className="font-semibold text-lg group-data-[collapsible=icon]:hidden">
-              GitRoll
-            </span>
-          </div>
+        <SidebarHeader className="border-b border-sidebar-border p-2">
+          {/* Organization Switcher */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex w-full items-center justify-between rounded-lg p-2 hover:bg-sidebar-accent">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">
+                    {selectedOrg.name.charAt(0)}
+                  </div>
+                  <span className="font-semibold text-sm">{selectedOrg.name}</span>
+                </div>
+                <ChevronDown className="size-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-[200px]">
+              <DropdownMenuLabel>Switch Organization</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {organizations.map((org) => (
+                <DropdownMenuItem
+                  key={org.id}
+                  onClick={() => setSelectedOrg(org)}
+                  className={cn(
+                    'flex items-center gap-2',
+                    selectedOrg.id === org.id && 'bg-accent',
+                  )}
+                >
+                  <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">
+                    {org.name.charAt(0)}
+                  </div>
+                  <span>{org.name}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </SidebarHeader>
 
         <SidebarContent className="overflow-y-auto">
-          {/* Organization Dashboard */}
+          {/* Main Navigation */}
           <SidebarGroup>
-            <Collapsible
-              open={openSections.organization}
-              onOpenChange={() => toggleSection("organization")}
-            >
-              <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label h-10 w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
-                  <div className="flex items-center gap-2 ">
-                    <Building2 className="size-4" />
-                    <span>Organization</span>
-                  </div>
-                  <ChevronRight
-                    className={`size-4 transition-transform duration-200 ${
-                      openSections.organization ? "rotate-90" : ""
-                    }`}
-                  />
-                </CollapsibleTrigger>
-              </SidebarGroupLabel>
-              <CollapsibleContent className="ml-5">
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {orgSubPages.map((page) => (
-                      <SidebarMenuItem key={page.label} className="h-10">
-                        <SidebarMenuButton asChild className="h-10">
-                          <a className="text-sm" href={page.href}>
-                            <span>{page.label}</span>
-                          </a>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </Collapsible>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-0">
+                {mainNavItems.map((item) => (
+                  <SidebarMenuItem className="h-10 font-medium" key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <a className="h-10 font-medium" href={item.url}>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarSeparator />
-
-          {/* Teams Dashboard */}
+          {/* Teams */}
           <SidebarGroup>
-            <Collapsible
-              open={openSections.teams}
-              onOpenChange={() => toggleSection("teams")}
-            >
-              <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label h-10 w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
-                  <div className="flex items-center gap-2">
-                    <Users className="size-4" />
-                    <span>Teams</span>
-                  </div>
-                  <ChevronRight
-                    className={`size-4 transition-transform duration-200 ${
-                      openSections.teams ? "rotate-90" : ""
-                    }`}
-                  />
-                </CollapsibleTrigger>
-              </SidebarGroupLabel>
-              <CollapsibleContent>
-                <SidebarGroupContent className="pl-5">
-                  <SidebarMenu>
-                    {teams.map((team) => (
-                      <Collapsible
-                        key={team.id}
-                        open={expandedItems[`team-${team.id}`]}
-                        onOpenChange={() => toggleItem(`team-${team.id}`)}
-                      >
-                        <SidebarMenuItem className="h-10">
-                          <CollapsibleTrigger asChild>
-                            <SidebarMenuButton className="h-10">
-                              <Image
-                                src={team.avatar}
-                                alt={team.name}
-                                width={16}
-                                height={16}
-                                className="rounded"
-                                unoptimized
-                              />
-                              <span>{team.name}</span>
-                              <ChevronRight
-                                className={`ml-auto size-4 transition-transform duration-200 ${
-                                  expandedItems[`team-${team.id}`] ? "rotate-90" : ""
-                                }`}
-                              />
-                            </SidebarMenuButton>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <SidebarMenuSub>
-                              {teamSubPages.map((page) => (
-                                <SidebarMenuSubItem key={page.label}>
-                                  <SidebarMenuSubButton asChild>
-                                    <a href={`/team/${team.id}/${page.href}`}>
-                                      {page.label}
-                                    </a>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              ))}
-                            </SidebarMenuSub>
-                          </CollapsibleContent>
-                        </SidebarMenuItem>
-                      </Collapsible>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </Collapsible>
+            <SidebarGroupLabel className="px-2 text-sm font-semibold text-muted-foreground">
+              Teams
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visibleTeams.map((team) => (
+                  <SidebarMenuItem key={team.id}>
+                    <SidebarMenuButton asChild>
+                      <a href={`/team/${team.id}/overview`}>
+                        <Image
+                          src={team.avatar}
+                          alt={team.name}
+                          width={16}
+                          height={16}
+                          className="rounded"
+                          unoptimized
+                        />
+                        <span className="text-sm font-medium">{team.name}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                {teams.length > 3 && (
+                  <SidebarMenuItem>
+                    <button
+                      onClick={() => setShowAllTeams(!showAllTeams)}
+                      className="flex w-full items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      <MoreHorizontal className="size-4" />
+                      <span>{showAllTeams ? 'Show less' : 'More'}</span>
+                    </button>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarSeparator />
-
-          {/* Repositories Dashboard */}
+          {/* People */}
           <SidebarGroup>
-            <Collapsible
-              open={openSections.repositories}
-              onOpenChange={() => toggleSection("repositories")}
-            >
-              <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label w-full h-10 cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
-                  <div className="flex items-center gap-2">
-                    <GitBranch className="size-4" />
-                    <span>Repositories</span>
-                  </div>
-                  <ChevronRight
-                    className={`size-4 transition-transform duration-200 ${
-                      openSections.repositories ? "rotate-90" : ""
-                    }`}
-                  />
-                </CollapsibleTrigger>
-              </SidebarGroupLabel>
-              <CollapsibleContent className="pl-5">
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {repositories.map((repo) => (
-                      <Collapsible
-                        key={repo.id}
-                        open={expandedItems[`repo-${repo.id}`]}
-                        onOpenChange={() => toggleItem(`repo-${repo.id}`)}
-                      >
-                        <SidebarMenuItem className="h-10">
-                          <CollapsibleTrigger asChild>
-                            <SidebarMenuButton className="h-10">
-                              <GitBranch className="size-4" />
-                              <span className="font-mono text-xs">{repo.name}</span>
-                              <ChevronRight
-                                className={`ml-auto size-4 transition-transform duration-200 ${
-                                  expandedItems[`repo-${repo.id}`] ? "rotate-90" : ""
-                                }`}
-                              />
-                            </SidebarMenuButton>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <SidebarMenuSub>
-                              {repoSubPages.map((page) => (
-                                <SidebarMenuSubItem key={page.label}>
-                                  <SidebarMenuSubButton asChild>
-                                    <a href={`/repo/${repo.id}/${page.href}`}>
-                                      {page.label}
-                                    </a>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              ))}
-                            </SidebarMenuSub>
-                          </CollapsibleContent>
-                        </SidebarMenuItem>
-                      </Collapsible>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </Collapsible>
+            <SidebarGroupLabel className="px-2 text-sm font-semibold text-muted-foreground">
+              People
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visiblePeople.map((person) => (
+                  <SidebarMenuItem key={person.id}>
+                    <SidebarMenuButton asChild>
+                      <a href={`/user/${person.id}/overview`}>
+                        <Image
+                          src={person.avatar}
+                          alt={person.name}
+                          width={20}
+                          height={20}
+                          className="rounded-full object-cover"
+                          unoptimized
+                        />
+                        <span className="text-sm font-medium">{person.name}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                {people.length > 2 && (
+                  <SidebarMenuItem>
+                    <button
+                      onClick={() => setShowAllPeople(!showAllPeople)}
+                      className="flex w-full items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      <MoreHorizontal className="size-4" />
+                      <span>{showAllPeople ? 'Show less' : 'More'}</span>
+                    </button>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
 
-          <SidebarSeparator />
-
-          {/* Users/People Dashboard */}
+          {/* Repositories */}
           <SidebarGroup>
-            <Collapsible
-              open={openSections.people}
-              onOpenChange={() => toggleSection("people")}
-            >
-              <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label w-full h-10 cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
-                  <div className="flex items-center gap-2">
-                    <User className="size-4" />
-                    <span>People</span>
-                  </div>
-                  <ChevronRight
-                    className={`size-4 transition-transform duration-200 ${
-                      openSections.people ? "rotate-90" : ""
-                    }`}
-                  />
-                </CollapsibleTrigger>
-              </SidebarGroupLabel>
-              <CollapsibleContent className="pl-5">
-                <SidebarGroupContent>
-                  <SidebarMenu>
-                    {people.map((person) => (
-                      <Collapsible
-                        key={person.id}
-                        open={expandedItems[`user-${person.id}`]}
-                        onOpenChange={() => toggleItem(`user-${person.id}`)}
-                      >
-                        <SidebarMenuItem className="h-10">
-                          <CollapsibleTrigger asChild>
-                            <SidebarMenuButton className="h-10">
-                              <Image
-                                src={person.avatar}
-                                alt={person.name}
-                                width={16}
-                                height={16}
-                                className="rounded-full object-cover"
-                                unoptimized
-                              />
-                              <span>{person.name}</span>
-                              <ChevronRight
-                                className={`ml-auto size-4 transition-transform duration-200 ${
-                                  expandedItems[`user-${person.id}`] ? "rotate-90" : ""
-                                }`}
-                              />
-                            </SidebarMenuButton>
-                          </CollapsibleTrigger>
-                          <CollapsibleContent>
-                            <SidebarMenuSub>
-                              {userSubPages.map((page) => (
-                                <SidebarMenuSubItem key={page.label}>
-                                  <SidebarMenuSubButton asChild>
-                                    <a href={`/user/${person.id}/${page.href}`}>
-                                      {page.label}
-                                    </a>
-                                  </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
-                              ))}
-                            </SidebarMenuSub>
-                          </CollapsibleContent>
-                        </SidebarMenuItem>
-                      </Collapsible>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </CollapsibleContent>
-            </Collapsible>
+            <SidebarGroupLabel className="px-2 text-sm font-semibold text-muted-foreground">
+              Repositories
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visibleRepos.map((repo) => (
+                  <SidebarMenuItem key={repo.id}>
+                    <SidebarMenuButton asChild>
+                      <a href={`/repo/${repo.id}/overview`}>
+                        <GitBranch className="size-3" />
+                        <span className="font-mono text-sm font-medium">{repo.name}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                {repositories.length > 2 && (
+                  <SidebarMenuItem>
+                    <button
+                      onClick={() => setShowAllRepos(!showAllRepos)}
+                      className="flex w-full items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      <MoreHorizontal className="size-4" />
+                      <span>{showAllRepos ? 'Show less' : 'More'}</span>
+                    </button>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="border-t border-sidebar-border">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Settings">
+        <SidebarFooter className="border-t border-sidebar-border p-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton className="h-auto w-full py-2">
+                <Image
+                  src={people[0]!.avatar}
+                  alt="John Doe"
+                  width={32}
+                  height={32}
+                  className="rounded-full object-cover"
+                  unoptimized
+                />
+                <div className="flex flex-1 flex-col items-start text-left">
+                  <span className="text-sm font-medium">John Doe</span>
+                  <span className="text-xs text-muted-foreground">Admin</span>
+                </div>
+                <ChevronRight className="size-4 text-muted-foreground" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="top" className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <UserCircle className="size-4" />
+                <span>Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
                 <Settings className="size-4" />
                 <span>Settings</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Log out">
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <HelpCircle className="size-4" />
+                <span>Help & Support</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive focus:text-destructive">
                 <LogOut className="size-4" />
                 <span>Log out</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </SidebarFooter>
       </Sidebar>
 
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b px-6">
           <SidebarTrigger />
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="font-semibold text-foreground">Dashboard</span>
+          <div className="flex items-center gap-2">
+            <LayoutDashboard className="size-4 text-muted-foreground" />
+            <span className="text-sm font-medium">Project Management & Task Tracking</span>
           </div>
         </header>
 
         <main className="flex flex-1 flex-col items-center justify-center p-8 bg-zinc-50 dark:bg-zinc-950">
-          <h3 className="text-lg font-semibold">The page content goes here...</h3>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-            <Button asChild variant="outline" size="sm">
-              <Link href="/">Variant One</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/variant-two">Variant Two</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/variant-three">Variant Three</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/variant-four">Variant Four</Link>
-            </Button>
+          <div className="max-w-2xl space-y-6 text-center">
+            <h3 className="text-lg font-semibold">Clean Sidebar Navigation</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              A minimal sidebar with organization switcher at top, flat main navigation, 
+              and collapsible sections for teams, people, and repositories with &quot;Show more&quot; buttons.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-2 border-t pt-6">
+              <Button asChild variant="default" size="sm">
+                <Link href="/">Variant One</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/variant-two">Variant Two</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/variant-three">Variant Three</Link>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/variant-four">Variant Four</Link>
+              </Button>
+            </div>
           </div>
         </main>
       </SidebarInset>

@@ -203,8 +203,8 @@ export default function Home() {
               onOpenChange={() => toggleSection("organization")}
             >
               <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
-                  <div className="flex items-center gap-2">
+                <CollapsibleTrigger className="group/label h-10 w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
+                  <div className="flex items-center gap-2 ">
                     <Building2 className="size-4" />
                     <span>Organization</span>
                   </div>
@@ -219,8 +219,8 @@ export default function Home() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {orgSubPages.map((page) => (
-                      <SidebarMenuItem key={page.label}>
-                        <SidebarMenuButton asChild>
+                      <SidebarMenuItem key={page.label} className="h-10">
+                        <SidebarMenuButton asChild className="h-10">
                           <a className="text-sm" href={page.href}>
                             <span>{page.label}</span>
                           </a>
@@ -242,7 +242,7 @@ export default function Home() {
               onOpenChange={() => toggleSection("teams")}
             >
               <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
+                <CollapsibleTrigger className="group/label h-10 w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
                   <div className="flex items-center gap-2">
                     <Users className="size-4" />
                     <span>Teams</span>
@@ -263,9 +263,9 @@ export default function Home() {
                         open={expandedItems[`team-${team.id}`]}
                         onOpenChange={() => toggleItem(`team-${team.id}`)}
                       >
-                        <SidebarMenuItem>
+                        <SidebarMenuItem className="h-10">
                           <CollapsibleTrigger asChild>
-                            <SidebarMenuButton>
+                            <SidebarMenuButton className="h-10">
                               <Image
                                 src={team.avatar}
                                 alt={team.name}
@@ -313,7 +313,7 @@ export default function Home() {
               onOpenChange={() => toggleSection("repositories")}
             >
               <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
+                <CollapsibleTrigger className="group/label w-full h-10 cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
                   <div className="flex items-center gap-2">
                     <GitBranch className="size-4" />
                     <span>Repositories</span>
@@ -334,9 +334,9 @@ export default function Home() {
                         open={expandedItems[`repo-${repo.id}`]}
                         onOpenChange={() => toggleItem(`repo-${repo.id}`)}
                       >
-                        <SidebarMenuItem>
+                        <SidebarMenuItem className="h-10">
                           <CollapsibleTrigger asChild>
-                            <SidebarMenuButton>
+                            <SidebarMenuButton className="h-10">
                               <GitBranch className="size-4" />
                               <span className="font-mono text-xs">{repo.name}</span>
                               <ChevronRight
@@ -377,7 +377,7 @@ export default function Home() {
               onOpenChange={() => toggleSection("people")}
             >
               <SidebarGroupLabel asChild>
-                <CollapsibleTrigger className="group/label w-full cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
+                <CollapsibleTrigger className="group/label w-full h-10 cursor-pointer justify-between pr-2 hover:bg-sidebar-accent">
                   <div className="flex items-center gap-2">
                     <User className="size-4" />
                     <span>People</span>
@@ -398,9 +398,9 @@ export default function Home() {
                         open={expandedItems[`user-${person.id}`]}
                         onOpenChange={() => toggleItem(`user-${person.id}`)}
                       >
-                        <SidebarMenuItem>
+                        <SidebarMenuItem className="h-10">
                           <CollapsibleTrigger asChild>
-                            <SidebarMenuButton>
+                            <SidebarMenuButton className="h-10">
                               <Image
                                 src={person.avatar}
                                 alt={person.name}

@@ -382,7 +382,7 @@ function DashboardSwitcher({
   );
 }
 
-export default function VariantTwo() {
+function VariantTwoContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -665,5 +665,13 @@ export default function VariantTwo() {
         </main>
       </SidebarInset>
     </SidebarProvider>
+  );
+}
+
+export default function VariantTwo() {
+  return (
+    <React.Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+      <VariantTwoContent />
+    </React.Suspense>
   );
 }

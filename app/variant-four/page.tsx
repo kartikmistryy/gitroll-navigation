@@ -154,7 +154,7 @@ function NavRow({
   );
 }
 
-export default function VariantFour() {
+function VariantFourContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -579,5 +579,13 @@ export default function VariantFour() {
         </main>
       </SidebarInset>
     </SidebarProvider>
+  );
+}
+
+export default function VariantFour() {
+  return (
+    <React.Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+      <VariantFourContent />
+    </React.Suspense>
   );
 }

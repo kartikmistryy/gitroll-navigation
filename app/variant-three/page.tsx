@@ -379,7 +379,7 @@ function DashboardSwitcher({
   );
 }
 
-export default function VariantThree() {
+function VariantThreeContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -682,5 +682,13 @@ export default function VariantThree() {
         </main>
       </SidebarInset>
     </SidebarProvider>
+  );
+}
+
+export default function VariantThree() {
+  return (
+    <React.Suspense fallback={<div className="flex h-screen items-center justify-center">Loading...</div>}>
+      <VariantThreeContent />
+    </React.Suspense>
   );
 }

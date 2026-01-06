@@ -676,7 +676,7 @@ function VariantThreeContent() {
               <Link href="/variant-three">Variant Three</Link>
             </Button>
             <Button asChild variant="outline" size="sm">
-              <Link href="/variant-four">Variant Four</Link>
+              <Link href="/variant-four">One/Team</Link>
             </Button>
           </div>
         </main>

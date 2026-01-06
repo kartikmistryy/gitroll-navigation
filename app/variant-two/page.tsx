@@ -21,6 +21,7 @@ import {
   UserCircle,
   HelpCircle,
   LogOut,
+  Info,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -70,38 +71,71 @@ import {
 
 type DashboardKind = 'org' | 'team' | 'repo' | 'user';
 
-type Entity = { id: string; name: string };
+type Entity = { id: string; name: string; orgId?: string };
 
-const entities: Record<DashboardKind, Entity[]> = {
-  org: [
-    { id: 'gitroll', name: 'GitRoll' },
-    { id: 'acme', name: 'Acme Inc' },
-  ],
-  team: [
-    { id: 'frontend', name: 'Frontend Team' },
-    { id: 'platform', name: 'Platform Team' },
-    { id: 'design', name: 'Design Systems' },
-    { id: 'data', name: 'Data & Analytics' },
-    { id: 'security', name: 'Security' },
-    { id: 'qa', name: 'QA & Release' },
-  ],
-  repo: [
-    { id: 'web-app', name: 'web-app' },
-    { id: 'api-server', name: 'api-server' },
-  ],
-  user: [
-    { id: 'john-doe', name: 'John Doe' },
-    { id: 'jane-smith', name: 'Jane Smith' },
-    { id: 'alex-chen', name: 'Alex Chen' },
-    { id: 'priya-patel', name: 'Priya Patel' },
-    { id: 'mike-wilson', name: 'Mike Wilson' },
-    { id: 'sarah-johnson', name: 'Sarah Johnson' },
-    { id: 'emily-brown', name: 'Emily Brown' },
-    { id: 'daniel-kim', name: 'Daniel Kim' },
-    { id: 'sofia-garcia', name: 'Sofia Garcia' },
-    { id: 'noah-lee', name: 'Noah Lee' },
-  ],
+// Structure entities by organization
+const entitiesByOrg: Record<string, Record<DashboardKind, Entity[]>> = {
+  gitroll: {
+    org: [
+      { id: 'gitroll', name: 'GitRoll' },
+      { id: 'acme', name: 'Acme Inc' },
+    ],
+    team: [
+      { id: 'frontend', name: 'Frontend Team', orgId: 'gitroll' },
+      { id: 'platform', name: 'Platform Team', orgId: 'gitroll' },
+      { id: 'design', name: 'Design Systems', orgId: 'gitroll' },
+      { id: 'data', name: 'Data & Analytics', orgId: 'gitroll' },
+      { id: 'security', name: 'Security', orgId: 'gitroll' },
+      { id: 'qa', name: 'QA & Release', orgId: 'gitroll' },
+    ],
+    repo: [
+      { id: 'web-app', name: 'web-app', orgId: 'gitroll' },
+      { id: 'api-server', name: 'api-server', orgId: 'gitroll' },
+    ],
+    user: [
+      { id: 'john-doe', name: 'John Doe', orgId: 'gitroll' },
+      { id: 'jane-smith', name: 'Jane Smith', orgId: 'gitroll' },
+      { id: 'alex-chen', name: 'Alex Chen', orgId: 'gitroll' },
+      { id: 'priya-patel', name: 'Priya Patel', orgId: 'gitroll' },
+      { id: 'mike-wilson', name: 'Mike Wilson', orgId: 'gitroll' },
+      { id: 'sarah-johnson', name: 'Sarah Johnson', orgId: 'gitroll' },
+      { id: 'emily-brown', name: 'Emily Brown', orgId: 'gitroll' },
+      { id: 'daniel-kim', name: 'Daniel Kim', orgId: 'gitroll' },
+      { id: 'sofia-garcia', name: 'Sofia Garcia', orgId: 'gitroll' },
+      { id: 'noah-lee', name: 'Noah Lee', orgId: 'gitroll' },
+    ],
+  },
+  acme: {
+    org: [
+      { id: 'gitroll', name: 'GitRoll' },
+      { id: 'acme', name: 'Acme Inc' },
+    ],
+    team: [
+      { id: 'sales', name: 'Sales Team', orgId: 'acme' },
+      { id: 'marketing', name: 'Marketing Team', orgId: 'acme' },
+      { id: 'support', name: 'Support Team', orgId: 'acme' },
+      { id: 'engineering', name: 'Engineering Team', orgId: 'acme' },
+    ],
+    repo: [
+      { id: 'crm-app', name: 'crm-app', orgId: 'acme' },
+      { id: 'marketing-site', name: 'marketing-site', orgId: 'acme' },
+      { id: 'support-portal', name: 'support-portal', orgId: 'acme' },
+    ],
+    user: [
+      { id: 'sarah-johnson', name: 'Sarah Johnson', orgId: 'acme' },
+      { id: 'emily-brown', name: 'Emily Brown', orgId: 'acme' },
+      { id: 'daniel-kim', name: 'Daniel Kim', orgId: 'acme' },
+      { id: 'sofia-garcia', name: 'Sofia Garcia', orgId: 'acme' },
+      { id: 'james-wilson', name: 'James Wilson', orgId: 'acme' },
+      { id: 'lisa-anderson', name: 'Lisa Anderson', orgId: 'acme' },
+    ],
+  },
 };
+
+// Helper to get entities for current org
+function getEntitiesForOrg(orgId: string): Record<DashboardKind, Entity[]> {
+  return entitiesByOrg[orgId] || entitiesByOrg.gitroll;
+}
 
 const dashboardMeta: Record<
   DashboardKind,
@@ -275,28 +309,44 @@ function DashboardSwitcher({
   dashboard,
   entity,
   onSelect,
+  currentOrgId,
 }: {
   dashboard: DashboardKind;
   entity: Entity;
   onSelect: (nextDashboard: DashboardKind, nextEntityId: string) => void;
+  currentOrgId: string;
 }) {
   const [open, setOpen] = React.useState(false);
   const [activeKind, setActiveKind] = React.useState<DashboardKind>(dashboard);
+  const [highlightOrg, setHighlightOrg] = React.useState(false);
 
   const meta = dashboardMeta[dashboard];
   const Icon = meta.icon;
+  const entities = getEntitiesForOrg(currentOrgId);
 
   React.useEffect(() => {
     // Keep the two-panel selector aligned with the currently-selected dashboard.
     setActiveKind(dashboard);
   }, [dashboard, open]);
 
+  // Highlight when org changes
+  React.useEffect(() => {
+    if (dashboard === 'org') {
+      setHighlightOrg(true);
+      const timer = setTimeout(() => setHighlightOrg(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentOrgId, dashboard]);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="w-full justify-between gap-2 h-12 px-2"
+          className={cn(
+            'w-full justify-between gap-2 h-12 px-2 transition-all',
+            highlightOrg && 'ring-2 ring-primary ring-offset-2',
+          )}
           aria-haspopup="menu"
           aria-expanded={open}
         >
@@ -336,6 +386,7 @@ function DashboardSwitcher({
                   const m = dashboardMeta[kind];
                   const KIcon = m.icon;
                   const selected = kind === activeKind;
+                  const count = entities[kind].length;
                   return (
                     <button
                       key={kind}
@@ -347,11 +398,26 @@ function DashboardSwitcher({
                       onClick={() => setActiveKind(kind)}
                     >
                       <KIcon className="size-4" />
-                      <span className="font-medium">{m.label}</span>
+                      <span className="font-medium flex-1">{m.label}</span>
+                      {kind !== 'org' && (
+                        <span className="text-xs text-muted-foreground">({count})</span>
+                      )}
                     </button>
                   );
                 })}
               </div>
+              {/* Show org context */}
+              {activeKind !== 'org' && (
+                <div className="mt-2 pt-2 border-t border-sidebar-border px-2">
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                    <Info className="size-3" />
+                    <span>
+                      Showing {activeKind}s for{' '}
+                      {entities.org.find((o) => o.id === currentOrgId)?.name || currentOrgId}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right: children for selected parent */}
@@ -400,9 +466,28 @@ function VariantTwoContent() {
   const searchParams = useSearchParams();
 
   const [dashboard, setDashboard] = React.useState<DashboardKind>('org');
-  const [entityId, setEntityId] = React.useState<string>(entities.org[0]!.id);
+  const [entityId, setEntityId] = React.useState<string>('gitroll');
   const [activePage, setActivePage] = React.useState<string>('Overview');
   const [openSections, setOpenSections] = React.useState<Set<string>>(new Set(['Overview']));
+  const [orgChanged, setOrgChanged] = React.useState(false);
+
+  // Get current org ID
+  const currentOrgId = React.useMemo(() => {
+    if (dashboard === 'org') {
+      return entityId;
+    }
+    // For non-org dashboards, find the org from the entity
+    const allOrgs = Object.keys(entitiesByOrg);
+    for (const orgId of allOrgs) {
+      const orgEntities = entitiesByOrg[orgId];
+      if (orgEntities[dashboard].some((e) => e.id === entityId)) {
+        return orgId;
+      }
+    }
+    return 'gitroll';
+  }, [dashboard, entityId]);
+
+  const entities = React.useMemo(() => getEntitiesForOrg(currentOrgId), [currentOrgId]);
 
   const createQueryString = React.useCallback(
     (updates: Record<string, string | undefined>) => {
@@ -430,12 +515,21 @@ function VariantTwoContent() {
 
   const setSelection = React.useCallback(
     (nextDash: DashboardKind, nextEntityId: string, nextPage: string) => {
+      const prevOrgId = currentOrgId;
       setDashboard(nextDash);
       setEntityId(nextEntityId);
       setActivePage(nextPage);
+
+      // Detect org change
+      const nextOrgId = nextDash === 'org' ? nextEntityId : currentOrgId;
+      if (nextOrgId !== prevOrgId && nextDash === 'org') {
+        setOrgChanged(true);
+        setTimeout(() => setOrgChanged(false), 3000);
+      }
+
       router.replace(selectionHref(nextDash, nextEntityId, nextPage), { scroll: false });
     },
-    [router, selectionHref],
+    [router, selectionHref, currentOrgId],
   );
 
   React.useEffect(() => {
@@ -445,16 +539,28 @@ function VariantTwoContent() {
         ? rawDash
         : dashboard;
 
+    const nextOrgId =
+      nextDash === 'org'
+        ? searchParams.get('entityId') || 'gitroll'
+        : currentOrgId;
+    const entitiesForDash = getEntitiesForOrg(nextOrgId);
+
     const rawEntityId = searchParams.get('entityId');
     const nextEntityId =
-      rawEntityId && entities[nextDash].some((e) => e.id === rawEntityId)
+      rawEntityId && entitiesForDash[nextDash].some((e) => e.id === rawEntityId)
         ? rawEntityId
-        : entities[nextDash][0]!.id;
+        : entitiesForDash[nextDash][0]!.id;
 
     const rawPage = searchParams.get('page');
     const allowed = pagesByDashboard[nextDash];
     const allPages = allowed.flatMap((section) => section.pages.map((p) => p.label));
     const nextPage = rawPage && allPages.includes(rawPage) ? rawPage : 'Overview';
+
+    // Detect org change from URL
+    if (nextDash === 'org' && nextEntityId !== currentOrgId) {
+      setOrgChanged(true);
+      setTimeout(() => setOrgChanged(false), 3000);
+    }
 
     if (nextDash !== dashboard) setDashboard(nextDash);
     if (nextEntityId !== entityId) setEntityId(nextEntityId);
@@ -464,7 +570,7 @@ function VariantTwoContent() {
 
   const entity = React.useMemo(() => {
     return entities[dashboard].find((e) => e.id === entityId) ?? entities[dashboard][0]!;
-  }, [dashboard, entityId]);
+  }, [dashboard, entityId, entities]);
 
   const pages = pagesByDashboard[dashboard];
 
@@ -497,8 +603,20 @@ function VariantTwoContent() {
               onSelect={(nextDash, nextEntityId) => {
                 setSelection(nextDash, nextEntityId, 'Overview');
               }}
+              currentOrgId={currentOrgId}
             />
           </div>
+          {/* Show notification when org changes */}
+          {orgChanged && (
+            <div className="px-2 pb-2">
+              <div className="flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1.5 text-xs text-primary animate-in fade-in slide-in-from-top-2">
+                <Info className="size-3" />
+                <span>
+                  Switched to {entity.name}. Teams, people, and repos updated.
+                </span>
+              </div>
+            </div>
+          )}
         </SidebarHeader>
 
         <SidebarContent className="overflow-y-auto">
@@ -670,7 +788,13 @@ function VariantTwoContent() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href={selectionHref(dashboard, entities[dashboard][0]!.id, pages[0]!.label)}>
+                  <Link
+                    href={selectionHref(
+                      dashboard,
+                      entities[dashboard][0]!.id,
+                      pages[0]!.pages[0]!.label,
+                    )}
+                  >
                     {dashboardMeta[dashboard].label}
                   </Link>
                 </BreadcrumbLink>
@@ -678,7 +802,11 @@ function VariantTwoContent() {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href={selectionHref(dashboard, entity.id, pages[0]!.label)}>{entity.name}</Link>
+                  <Link
+                    href={selectionHref(dashboard, entity.id, pages[0]!.pages[0]!.label)}
+                  >
+                    {entity.name}
+                  </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
@@ -706,7 +834,7 @@ function VariantTwoContent() {
               <Link href="/variant-three">Variant Three</Link>
             </Button>
             <Button asChild variant="outline" size="sm">
-              <Link href="/variant-four">Variant Four</Link>
+              <Link href="/variant-four">One/Team</Link>
             </Button>
           </div>
         </main>

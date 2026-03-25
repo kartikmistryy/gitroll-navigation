@@ -59,7 +59,7 @@ import {
   SidebarTrigger,
 } from '@/components/animate-ui/components/radix/sidebar';
 
-type DashboardKind = 'org' | 'team' | 'repo' | 'user';
+type DashboardKind = 'org' | 'repo' | 'user';
 type Entity = { id: string; name: string };
 
 const dashboards: Array<{
@@ -68,7 +68,6 @@ const dashboards: Array<{
   icon: React.ComponentType<{ className?: string }>;
 }> = [
   { kind: 'org', label: 'Org', icon: Building2 },
-  { kind: 'team', label: 'Team', icon: Users },
   { kind: 'repo', label: 'Repo', icon: GitBranch },
   { kind: 'user', label: 'Users', icon: User },
 ];
@@ -77,14 +76,6 @@ const entities: Record<DashboardKind, Entity[]> = {
   org: [
     { id: 'gitroll', name: 'GitRoll' },
     { id: 'acme', name: 'Acme Inc' },
-  ],
-  team: [
-    { id: 'frontend', name: 'Frontend Team' },
-    { id: 'platform', name: 'Platform Team' },
-    { id: 'design', name: 'Design Systems' },
-    { id: 'data', name: 'Data & Analytics' },
-    { id: 'security', name: 'Security' },
-    { id: 'qa', name: 'QA & Release' },
   ],
   repo: [
     { id: 'web-app', name: 'web-app' },
@@ -150,39 +141,6 @@ const pagesByDashboard: Record<DashboardKind, PageSection[]> = {
         { label: 'Benchmarks', slug: 'benchmarks' },
         { label: 'Reports', slug: 'reports' },
       ],
-    },
-    {
-      label: 'Settings',
-      icon: Settings,
-      pages: [{ label: 'Settings', slug: 'settings' }],
-    },
-  ],
-  team: [
-    {
-      label: 'Overview',
-      icon: LayoutDashboard,
-      pages: [{ label: 'Overview', slug: 'overview' }],
-    },
-    {
-      label: 'Risks & Alerts',
-      icon: ShieldAlert,
-      pages: [
-        { label: 'Risk Overview', slug: 'risks' },
-        { label: 'Code Quality', slug: 'quality' },
-      ],
-    },
-    {
-      label: 'Workforce',
-      icon: Users,
-      pages: [
-        { label: 'Members', slug: 'members' },
-        { label: 'Skills', slug: 'skills' },
-      ],
-    },
-    {
-      label: 'Analytics',
-      icon: BarChart3,
-      pages: [{ label: 'Benchmarks', slug: 'benchmarks' }],
     },
     {
       label: 'Settings',
@@ -256,7 +214,6 @@ const dashboardMeta: Record<
   { label: string; icon: React.ComponentType<{ className?: string }> }
 > = {
   org: { label: 'Org', icon: Building2 },
-  team: { label: 'Team', icon: Users },
   repo: { label: 'Repo', icon: GitBranch },
   user: { label: 'Users', icon: User },
 };
@@ -431,7 +388,7 @@ function VariantThreeContent() {
   React.useEffect(() => {
     const rawDash = searchParams.get('dashboard');
     const nextDash: DashboardKind =
-      rawDash === 'org' || rawDash === 'team' || rawDash === 'repo' || rawDash === 'user'
+      rawDash === 'org' || rawDash === 'repo' || rawDash === 'user'
         ? rawDash
         : dashboard;
 
@@ -674,9 +631,6 @@ function VariantThreeContent() {
             </Button>
             <Button asChild variant="outline" size="sm">
               <Link href="/variant-three">Variant Three</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/variant-four">One/Team</Link>
             </Button>
           </div>
         </main>

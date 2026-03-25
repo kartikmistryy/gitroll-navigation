@@ -69,7 +69,7 @@ import {
   SidebarTrigger,
 } from '@/components/animate-ui/components/radix/sidebar';
 
-type DashboardKind = 'org' | 'team' | 'repo' | 'user';
+type DashboardKind = 'org' | 'repo' | 'user';
 
 type Entity = { id: string; name: string; orgId?: string };
 
@@ -79,14 +79,6 @@ const entitiesByOrg: Record<string, Record<DashboardKind, Entity[]>> = {
     org: [
       { id: 'gitroll', name: 'GitRoll' },
       { id: 'acme', name: 'Acme Inc' },
-    ],
-    team: [
-      { id: 'frontend', name: 'Frontend Team', orgId: 'gitroll' },
-      { id: 'platform', name: 'Platform Team', orgId: 'gitroll' },
-      { id: 'design', name: 'Design Systems', orgId: 'gitroll' },
-      { id: 'data', name: 'Data & Analytics', orgId: 'gitroll' },
-      { id: 'security', name: 'Security', orgId: 'gitroll' },
-      { id: 'qa', name: 'QA & Release', orgId: 'gitroll' },
     ],
     repo: [
       { id: 'web-app', name: 'web-app', orgId: 'gitroll' },
@@ -109,12 +101,6 @@ const entitiesByOrg: Record<string, Record<DashboardKind, Entity[]>> = {
     org: [
       { id: 'gitroll', name: 'GitRoll' },
       { id: 'acme', name: 'Acme Inc' },
-    ],
-    team: [
-      { id: 'sales', name: 'Sales Team', orgId: 'acme' },
-      { id: 'marketing', name: 'Marketing Team', orgId: 'acme' },
-      { id: 'support', name: 'Support Team', orgId: 'acme' },
-      { id: 'engineering', name: 'Engineering Team', orgId: 'acme' },
     ],
     repo: [
       { id: 'crm-app', name: 'crm-app', orgId: 'acme' },
@@ -142,7 +128,6 @@ const dashboardMeta: Record<
   { label: string; icon: React.ComponentType<{ className?: string }> }
 > = {
   org: { label: 'Org', icon: Building2 },
-  team: { label: 'Team', icon: Users },
   repo: { label: 'Repo', icon: GitBranch },
   user: { label: 'Users', icon: User },
 };
@@ -209,39 +194,6 @@ const pagesByDashboard: Record<DashboardKind, PageSection[]> = {
       label: 'Settings',
       icon: Settings,
       pages: [{ label: 'Settings', href: (id) => `/org/${id}/settings` }],
-    },
-  ],
-  team: [
-    {
-      label: 'Overview',
-      icon: LayoutDashboard,
-      pages: [{ label: 'Overview', href: (id) => `/team/${id}/overview` }],
-    },
-    {
-      label: 'Risks & Alerts',
-      icon: ShieldAlert,
-      pages: [
-        { label: 'Risk Overview', href: (id) => `/team/${id}/risks` },
-        { label: 'Code Quality', href: (id) => `/team/${id}/quality` },
-      ],
-    },
-    {
-      label: 'Workforce',
-      icon: Users,
-      pages: [
-        { label: 'Members', href: (id) => `/team/${id}/members` },
-        { label: 'Skills', href: (id) => `/team/${id}/skills` },
-      ],
-    },
-    {
-      label: 'Analytics',
-      icon: BarChart3,
-      pages: [{ label: 'Benchmarks', href: (id) => `/team/${id}/benchmarks` }],
-    },
-    {
-      label: 'Settings',
-      icon: Settings,
-      pages: [{ label: 'Settings', href: (id) => `/team/${id}/settings` }],
     },
   ],
   repo: [
@@ -535,7 +487,7 @@ function VariantTwoContent() {
   React.useEffect(() => {
     const rawDash = searchParams.get('dashboard');
     const nextDash: DashboardKind =
-      rawDash === 'org' || rawDash === 'team' || rawDash === 'repo' || rawDash === 'user'
+      rawDash === 'org' || rawDash === 'repo' || rawDash === 'user'
         ? rawDash
         : dashboard;
 
@@ -612,7 +564,7 @@ function VariantTwoContent() {
               <div className="flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1.5 text-xs text-primary animate-in fade-in slide-in-from-top-2">
                 <Info className="size-3" />
                 <span>
-                  Switched to {entity.name}. Teams, people, and repos updated.
+                  Switched to {entity.name}. People and repos updated.
                 </span>
               </div>
             </div>
@@ -832,9 +784,6 @@ function VariantTwoContent() {
             </Button>
             <Button asChild variant="outline" size="sm">
               <Link href="/variant-three">Variant Three</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/variant-four">One/Team</Link>
             </Button>
           </div>
         </main>

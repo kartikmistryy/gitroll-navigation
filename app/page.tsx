@@ -11,15 +11,11 @@ import {
   LogOut,
   LayoutDashboard,
   Sparkles,
-  MapPin,
-  MoreHorizontal,
   Home as HomeIcon,
   UserCircle,
   HelpCircle,
-  Search,
-  Minus,
   Book,
-  Bookmark,
+  Users,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -45,12 +41,19 @@ import {
   SidebarInset,
 } from "@/components/animate-ui/components/radix/sidebar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+// Tab groups per view type
+const tabsByView: Record<string, string[]> = {
+  org: ['Overview', 'Performance', 'SPOF', 'Outliers', 'SkillsGraph', 'AI Consultant'],
+  repo: ['Overview', 'Performance', 'Contributors', 'Code Quality', 'Settings'],
+  person: ['Overview', 'Performance', 'Skills', 'Activity', 'Code Reviews'],
+};
 
 // Organizations
 const organizations = [
-  { id: 'gitroll', name: 'GitRoll' },
+  { id: 'gitroll', name: 'Gitroll' },
   { id: 'acme', name: 'Acme Inc' },
   { id: 'techcorp', name: 'TechCorp' },
 ];
@@ -58,413 +61,172 @@ const organizations = [
 // Main navigation items
 const mainNavItems = [
   { title: 'Home', url: '#', icon: HomeIcon },
-  { title: 'Skill Maps', url: '#', icon: MapPin },
+  { title: 'SkillsGraph', url: '#', icon: LayoutDashboard },
   { title: 'Ask AI', url: '#', icon: Sparkles },
 ];
 
-// Structure teams, people, and repos by organization
-const teamsByOrg: Record<string, Array<{ id: string; name: string; avatar: string; orgId: string }>> = {
+const repositoriesByOrg: Record<string, Array<{ id: string; name: string; orgId: string }>> = {
   gitroll: [
-    { 
-      id: "frontend", 
-      name: "Frontend Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=frontend&backgroundColor=6366f1",
-      orgId: "gitroll"
-    },
-    { 
-      id: "backend", 
-      name: "Backend Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=backend&backgroundColor=10b981",
-      orgId: "gitroll"
-    },
-    { 
-      id: "devops", 
-      name: "DevOps Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=devops&backgroundColor=f59e0b",
-      orgId: "gitroll"
-    },
-    { 
-      id: "mobile", 
-      name: "Mobile Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=mobile&backgroundColor=ec4899",
-      orgId: "gitroll"
-    },
-    {
-      id: "data",
-      name: "Data & Analytics",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=data&backgroundColor=06b6d4",
-      orgId: "gitroll"
-    },
-    {
-      id: "security",
-      name: "Security",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=security&backgroundColor=8b5cf6",
-      orgId: "gitroll"
-    },
+    { id: "browser-sdk", name: "browser-sdk", orgId: "gitroll" },
+    { id: "datadog-agent", name: "datadog-agent", orgId: "gitroll" },
+    { id: "web-app", name: "web-app", orgId: "gitroll" },
+    { id: "api-server", name: "api-server", orgId: "gitroll" },
+    { id: "mobile-app", name: "mobile-app", orgId: "gitroll" },
+    { id: "shared-libs", name: "shared-libs", orgId: "gitroll" },
+    { id: "infra-tools", name: "infra-tools", orgId: "gitroll" },
+    { id: "docs-site", name: "docs-site", orgId: "gitroll" },
+    { id: "cli-tools", name: "cli-tools", orgId: "gitroll" },
+    { id: "design-system", name: "design-system", orgId: "gitroll" },
+    { id: "analytics-lib", name: "analytics-lib", orgId: "gitroll" },
+    { id: "auth-service", name: "auth-service", orgId: "gitroll" },
   ],
   acme: [
-    { 
-      id: "sales", 
-      name: "Sales Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=sales&backgroundColor=ef4444",
-      orgId: "acme"
-    },
-    { 
-      id: "marketing", 
-      name: "Marketing Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=marketing&backgroundColor=10b981",
-      orgId: "acme"
-    },
-    { 
-      id: "support", 
-      name: "Support Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=support&backgroundColor=f59e0b",
-      orgId: "acme"
-    },
-    {
-      id: "engineering",
-      name: "Engineering Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=engineering&backgroundColor=6366f1",
-      orgId: "acme"
-    },
+    { id: "crm-app", name: "crm-app", orgId: "acme" },
+    { id: "marketing-site", name: "marketing-site", orgId: "acme" },
+    { id: "support-portal", name: "support-portal", orgId: "acme" },
   ],
   techcorp: [
-    { 
-      id: "product", 
-      name: "Product Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=product&backgroundColor=8b5cf6",
-      orgId: "techcorp"
-    },
-    { 
-      id: "qa", 
-      name: "QA Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=qa&backgroundColor=06b6d4",
-      orgId: "techcorp"
-    },
-    { 
-      id: "infrastructure", 
-      name: "Infrastructure Team",
-      avatar: "https://api.dicebear.com/7.x/shapes/svg?seed=infrastructure&backgroundColor=ec4899",
-      orgId: "techcorp"
-    },
+    { id: "platform-core", name: "platform-core", orgId: "techcorp" },
+    { id: "analytics-engine", name: "analytics-engine", orgId: "techcorp" },
   ],
 };
 
-const repositoriesByOrg: Record<string, Array<{ id: string; name: string; orgId: string; teamId?: string }>> = {
+const peopleByOrg: Record<string, Array<{ id: string; name: string; avatar: string; orgId: string }>> = {
   gitroll: [
-    { id: "web-app", name: "web-app", orgId: "gitroll", teamId: "frontend" },
-    { id: "api-server", name: "api-server", orgId: "gitroll", teamId: "backend" },
-    { id: "mobile-app", name: "mobile-app", orgId: "gitroll", teamId: "mobile" },
-    { id: "shared-libs", name: "shared-libs", orgId: "gitroll", teamId: "frontend" },
-  ],
-  acme: [
-    { id: "crm-app", name: "crm-app", orgId: "acme", teamId: "sales" },
-    { id: "marketing-site", name: "marketing-site", orgId: "acme", teamId: "marketing" },
-    { id: "support-portal", name: "support-portal", orgId: "acme", teamId: "support" },
-  ],
-  techcorp: [
-    { id: "platform-core", name: "platform-core", orgId: "techcorp", teamId: "infrastructure" },
-    { id: "analytics-engine", name: "analytics-engine", orgId: "techcorp", teamId: "product" },
-  ],
-};
-
-const peopleByOrg: Record<string, Array<{ id: string; name: string; avatar: string; orgId: string; teamId?: string }>> = {
-  gitroll: [
-    { 
-      id: "john-doe", 
-      name: "John Doe", 
+    {
+      id: "andrew-lock",
+      name: "Andrew Lock",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
       orgId: "gitroll",
-      teamId: "frontend"
     },
-    { 
-      id: "jane-smith", 
-      name: "Jane Smith", 
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
-      orgId: "gitroll",
-      teamId: "frontend"
-    },
-    { 
-      id: "mike-wilson", 
-      name: "Mike Wilson", 
+    {
+      id: "sylvain-afchain",
+      name: "Sylvain Afchain",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
       orgId: "gitroll",
-      teamId: "backend"
     },
-    { 
-      id: "sarah-johnson", 
-      name: "Sarah Johnson", 
+    {
+      id: "jane-smith",
+      name: "Jane Smith",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+      orgId: "gitroll",
+    },
+    {
+      id: "sarah-johnson",
+      name: "Sarah Johnson",
       avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
       orgId: "gitroll",
-      teamId: "backend"
     },
-    { 
-      id: "alex-chen", 
-      name: "Alex Chen", 
+    {
+      id: "alex-chen",
+      name: "Alex Chen",
       avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=face",
       orgId: "gitroll",
-      teamId: "mobile"
     },
-    { 
-      id: "emily-brown", 
-      name: "Emily Brown", 
+    {
+      id: "emily-brown",
+      name: "Emily Brown",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
       orgId: "gitroll",
-      teamId: "devops"
     },
     {
       id: "priya-patel",
       name: "Priya Patel",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=priya-patel",
       orgId: "gitroll",
-      teamId: "data"
-    },
-    {
-      id: "daniel-kim",
-      name: "Daniel Kim",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=daniel-kim",
-      orgId: "gitroll",
-      teamId: "security"
-    },
-    {
-      id: "sofia-garcia",
-      name: "Sofia Garcia",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sofia-garcia",
-      orgId: "gitroll",
-      teamId: "frontend"
-    },
-    {
-      id: "noah-lee",
-      name: "Noah Lee",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=noah-lee",
-      orgId: "gitroll",
-      teamId: "backend"
     },
   ],
   acme: [
-    { 
-      id: "sarah-johnson", 
-      name: "Sarah Johnson", 
+    {
+      id: "sarah-johnson",
+      name: "Sarah Johnson",
       avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
       orgId: "acme",
-      teamId: "sales"
     },
-    { 
-      id: "emily-brown", 
-      name: "Emily Brown", 
+    {
+      id: "emily-brown",
+      name: "Emily Brown",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
       orgId: "acme",
-      teamId: "marketing"
     },
     {
       id: "daniel-kim",
       name: "Daniel Kim",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=daniel-kim",
       orgId: "acme",
-      teamId: "support"
-    },
-    {
-      id: "sofia-garcia",
-      name: "Sofia Garcia",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sofia-garcia",
-      orgId: "acme",
-      teamId: "engineering"
-    },
-    {
-      id: "james-wilson",
-      name: "James Wilson",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=james-wilson",
-      orgId: "acme",
-      teamId: "engineering"
-    },
-    {
-      id: "lisa-anderson",
-      name: "Lisa Anderson",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lisa-anderson",
-      orgId: "acme",
-      teamId: "sales"
     },
   ],
   techcorp: [
-    { 
-      id: "robert-taylor", 
-      name: "Robert Taylor", 
+    {
+      id: "robert-taylor",
+      name: "Robert Taylor",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=robert-taylor",
       orgId: "techcorp",
-      teamId: "product"
     },
-    { 
-      id: "maria-rodriguez", 
-      name: "Maria Rodriguez", 
+    {
+      id: "maria-rodriguez",
+      name: "Maria Rodriguez",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria-rodriguez",
       orgId: "techcorp",
-      teamId: "qa"
-    },
-    {
-      id: "david-martinez",
-      name: "David Martinez",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=david-martinez",
-      orgId: "techcorp",
-      teamId: "infrastructure"
-    },
-    {
-      id: "jennifer-white",
-      name: "Jennifer White",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jennifer-white",
-      orgId: "techcorp",
-      teamId: "product"
     },
   ],
 };
 
-type FavoriteItem = {
-  type: 'team' | 'person' | 'repo';
-  id: string;
-  orgId: string;
-};
-
-type HoveredItem = { type: 'team' | 'person' | 'repo'; id: string } | null;
-
-// Reusable Bookmark Button Component
-function BookmarkButton({
-  isFavorited,
-  onToggle,
-  className = "ml-auto",
-}: {
-  isFavorited: boolean;
-  onToggle: () => void;
-  className?: string;
-}) {
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        onToggle();
-      }}
-      className={cn(
-        className,
-        "p-0.5 hover:bg-sidebar-accent-hover rounded transition-all"
-      )}
-      title={isFavorited ? "Remove from favorites" : "Add to favorites"}
-    >
-      <Bookmark
-        className={cn(
-          "size-3.5 cursor-pointer",
-          isFavorited && "fill-current"
-        )}
-      />
-    </button>
-  );
-}
-
 export default function Home() {
   const [selectedOrg, setSelectedOrg] = useState(organizations[0]!);
-  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
-  const [showAllTeams, setShowAllTeams] = useState(false);
-  const [showAllRepos, setShowAllRepos] = useState(false);
-  const [showAllPeople, setShowAllPeople] = useState(false);
-  const [peopleSearchQuery, setPeopleSearchQuery] = useState("");
-  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
-  const [hoveredItem, setHoveredItem] = useState<HoveredItem>(null);
+  const [activeNav, setActiveNav] = useState('Home');
+  const [activeView, setActiveView] = useState<'org' | 'repo' | 'person'>('org');
+  const [activeTab, setActiveTab] = useState('Overview');
+  const [selectedEntityName, setSelectedEntityName] = useState<string | null>(null);
 
-  // Helper functions for hover handlers
-  const handleMouseEnter = (type: 'team' | 'person' | 'repo', id: string) => {
-    setHoveredItem({ type, id });
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredItem(null);
-  };
-
-  const isItemHovered = (type: 'team' | 'person' | 'repo', id: string) => {
-    return hoveredItem?.type === type && hoveredItem?.id === id;
-  };
-
-  // Get teams, people, and repos for selected organization
-  const allTeams = React.useMemo(() => teamsByOrg[selectedOrg.id] || [], [selectedOrg.id]);
   const allRepositories = React.useMemo(() => repositoriesByOrg[selectedOrg.id] || [], [selectedOrg.id]);
   const allPeople = React.useMemo(() => peopleByOrg[selectedOrg.id] || [], [selectedOrg.id]);
 
-  // Filter people and repos by selected team
-  const repositories = React.useMemo(() => {
-    if (!selectedTeam) return allRepositories;
-    return allRepositories.filter((repo) => repo.teamId === selectedTeam);
-  }, [allRepositories, selectedTeam]);
+  const visibleRepos = allRepositories.slice(0, 2);
+  const visiblePeople = allPeople.slice(0, 2);
 
-  const people = React.useMemo(() => {
-    let filtered = allPeople;
-    // Filter by team if selected
-    if (selectedTeam) {
-      filtered = filtered.filter((person) => person.teamId === selectedTeam);
-    }
-    // Filter by search query
-    if (peopleSearchQuery.trim()) {
-      const query = peopleSearchQuery.trim().toLowerCase();
-      filtered = filtered.filter((person) =>
-        person.name.toLowerCase().includes(query)
-      );
-    }
-    return filtered;
-  }, [allPeople, selectedTeam, peopleSearchQuery]);
+  const currentTabs = tabsByView[activeView];
+  const displayName = activeView === 'org' ? selectedOrg.name : selectedEntityName || selectedOrg.name;
+  const displayDescription = activeView === 'org'
+    ? 'Monitor performance and AI insights in real time.'
+    : activeView === 'repo'
+      ? 'Repository performance and code quality metrics.'
+      : 'Individual performance and contribution insights.';
 
-  // Get favorites for current org
-  const orgFavorites = React.useMemo(() => {
-    return favorites.filter((fav) => fav.orgId === selectedOrg.id);
-  }, [favorites, selectedOrg.id]);
-
-  // Helper to check if item is favorited
-  const isFavorited = (type: 'team' | 'person' | 'repo', id: string) => {
-    return favorites.some((fav) => fav.type === type && fav.id === id && fav.orgId === selectedOrg.id);
+  const handleSelectRepo = (repoName: string) => {
+    setActiveView('repo');
+    setSelectedEntityName(repoName);
+    setActiveTab('Overview');
   };
 
-  // Helper to toggle favorite
-  const toggleFavorite = (type: 'team' | 'person' | 'repo', id: string) => {
-    setFavorites((prev) => {
-      const exists = prev.some((fav) => fav.type === type && fav.id === id && fav.orgId === selectedOrg.id);
-      if (exists) {
-        return prev.filter((fav) => !(fav.type === type && fav.id === id && fav.orgId === selectedOrg.id));
-      }
-      return [...prev, { type, id, orgId: selectedOrg.id }];
-    });
+  const handleSelectPerson = (personName: string) => {
+    setActiveView('person');
+    setSelectedEntityName(personName);
+    setActiveTab('Overview');
   };
 
-  // Reset states when org changes
+  // Reset to org view when nav Home is clicked or org changes
   React.useEffect(() => {
-    setSelectedTeam(null);
-    setShowAllTeams(false);
-    setShowAllRepos(false);
-    setShowAllPeople(false);
-    setPeopleSearchQuery("");
+    setActiveView('org');
+    setSelectedEntityName(null);
+    setActiveTab('Overview');
   }, [selectedOrg.id]);
-
-  const visibleTeams = showAllTeams ? allTeams : allTeams.slice(0, 3);
-  const visibleRepos = showAllRepos ? repositories : repositories.slice(0, 2);
-  const visiblePeople = showAllPeople ? people : people.slice(0, 2);
 
   return (
     <SidebarProvider>
       <Sidebar variant="sidebar" collapsible="offcanvas">
-        <SidebarHeader className="border-b border-sidebar-border p-2">
+        <SidebarHeader className="p-4 pb-0">
           {/* Organization Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button 
-                className="flex w-full items-center justify-between rounded-lg p-2 hover:bg-sidebar-accent"
-                onClick={() => {
-                  // If clicking the trigger when a team is selected, reset to org view
-                  if (selectedTeam) {
-                    setSelectedTeam(null);
-                    setPeopleSearchQuery("");
-                  }
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">
-                    {selectedOrg.name.charAt(0)}
+              <button className="flex w-full items-center justify-between rounded-lg py-1 hover:bg-sidebar-accent px-1">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-500 text-white text-xs font-bold">
+                    {selectedOrg.name.substring(0, 2).toUpperCase()}
                   </div>
                   <span className="font-semibold text-sm">{selectedOrg.name}</span>
                 </div>
-                <ChevronDown className="size-4" />
+                <ChevronDown className="size-4 text-muted-foreground" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-[200px]">
@@ -479,8 +241,8 @@ export default function Home() {
                     selectedOrg.id === org.id && 'bg-accent',
                   )}
                 >
-                  <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-primary-foreground text-xs font-bold">
-                    {org.name.charAt(0)}
+                  <div className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-500 text-white text-xs font-bold">
+                    {org.name.substring(0, 2).toUpperCase()}
                   </div>
                   <span>{org.name}</span>
                 </DropdownMenuItem>
@@ -489,18 +251,30 @@ export default function Home() {
           </DropdownMenu>
         </SidebarHeader>
 
-        <SidebarContent className="overflow-y-auto">
+        <SidebarContent className="overflow-y-auto px-2 mt-4">
           {/* Main Navigation */}
           <SidebarGroup>
             <SidebarGroupContent>
-              <SidebarMenu className="gap-0">
+              <SidebarMenu className="gap-0.5">
                 {mainNavItems.map((item) => (
-                  <SidebarMenuItem className="h-10 font-medium" key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a className="h-10 font-medium" href={item.url}>
-                        <item.icon className="size-4" />
-                        <span>{item.title}</span>
-                      </a>
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      isActive={activeNav === item.title}
+                      onClick={() => {
+                        setActiveNav(item.title);
+                        if (item.title === 'Home') {
+                          setActiveView('org');
+                          setSelectedEntityName(null);
+                          setActiveTab('Overview');
+                        }
+                      }}
+                      className={cn(
+                        "h-9 font-medium rounded-md cursor-pointer!",
+                        activeNav === item.title && "bg-[#171717]! text-white! hover:bg-[#171717]/90! hover:text-white!"
+                      )}
+                    >
+                      <item.icon className="size-4" />
+                      <span>{item.title}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -508,295 +282,70 @@ export default function Home() {
             </SidebarGroupContent>
           </SidebarGroup>
 
-          {/* Favorites */}
-          {orgFavorites.length > 0 && (
-            <SidebarGroup>
-              <SidebarGroupLabel className="px-2 text-sm font-semibold text-muted-foreground">
-                Favorites
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {orgFavorites.map((fav) => {
-                    if (fav.type === 'team') {
-                      const team = allTeams.find((t) => t.id === fav.id);
-                      if (!team) return null;
-                      return (
-                        <SidebarMenuItem key={`team-${fav.id}`}>
-                          <SidebarMenuButton
-                            onClick={() => setSelectedTeam(selectedTeam === team.id ? null : team.id)}
-                            isActive={selectedTeam === team.id}
-                            className="relative cursor-pointer"
-                            onMouseEnter={() => handleMouseEnter('team', team.id)}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            <Image
-                              src={team.avatar}
-                              alt={team.name}
-                              width={16}
-                              height={16}
-                              className="rounded"
-                              unoptimized
-                            />
-                            <span className="text-sm font-medium flex-1">{team.name}</span>
-                            {isItemHovered('team', team.id) && (
-                              <BookmarkButton
-                                isFavorited={isFavorited('team', team.id)}
-                                onToggle={() => toggleFavorite('team', team.id)}
-                              />
-                            )}
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      );
-                    }
-                    if (fav.type === 'person') {
-                      const person = allPeople.find((p) => p.id === fav.id);
-                      if (!person) return null;
-                      return (
-                        <SidebarMenuItem key={`person-${fav.id}`}>
-                          <SidebarMenuButton
-                            className="relative cursor-pointer"
-                            onMouseEnter={() => handleMouseEnter('person', person.id)}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            <Image
-                              src={person.avatar}
-                              alt={person.name}
-                              width={20}
-                              height={20}
-                              className="rounded-full object-cover"
-                              unoptimized
-                            />
-                            <span className="text-sm font-medium flex-1">{person.name}</span>
-                            {isItemHovered('person', person.id) && (
-                              <BookmarkButton
-                                isFavorited={isFavorited('person', person.id)}
-                                onToggle={() => toggleFavorite('person', person.id)}
-                              />
-                            )}
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      );
-                    }
-                    if (fav.type === 'repo') {
-                      const repo = allRepositories.find((r) => r.id === fav.id);
-                      if (!repo) return null;
-                      return (
-                        <SidebarMenuItem key={`repo-${fav.id}`}>
-                          <SidebarMenuButton
-                            className="relative cursor-pointer"
-                            onMouseEnter={() => handleMouseEnter('repo', repo.id)}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            <Book className="size-3" />
-                            <span className="font-mono text-sm font-medium flex-1">{repo.name}</span>
-                            {isItemHovered('repo', repo.id) && (
-                              <BookmarkButton
-                                isFavorited={isFavorited('repo', repo.id)}
-                                onToggle={() => toggleFavorite('repo', repo.id)}
-                              />
-                            )}
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      );
-                    }
-                    return null;
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          )}
-
-          {/* Teams */}
-          {allTeams.length > 0 && (
-            <SidebarGroup>
-              <SidebarGroupLabel className="px-2 text-sm font-semibold text-muted-foreground">
-                Teams
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {visibleTeams.map((team) => (
-                    <SidebarMenuItem key={team.id}>
-                      <SidebarMenuButton
-                        onClick={() => setSelectedTeam(selectedTeam === team.id ? null : team.id)}
-                        isActive={selectedTeam === team.id}
-                        className="relative cursor-pointer"
-                        onMouseEnter={() => handleMouseEnter('team', team.id)}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        <Image
-                          src={team.avatar}
-                          alt={team.name}
-                          width={16}
-                          height={16}
-                          className="rounded"
-                          unoptimized
-                        />
-                        <span className="text-sm font-medium flex-1">{team.name}</span>
-                        <div className="ml-auto flex items-center gap-1">
-                          {selectedTeam === team.id && (
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedTeam(null);
-                                setPeopleSearchQuery("");
-                              }}
-                              className="p-0.5 hover:bg-sidebar-accent-hover rounded transition-colors"
-                              title="Clear team filter"
-                            >
-                              <Minus className="size-3.5" />
-                            </button>
-                          )}
-                          {isItemHovered('team', team.id) && (
-                            <BookmarkButton
-                              isFavorited={isFavorited('team', team.id)}
-                              onToggle={() => toggleFavorite('team', team.id)}
-                              className="p-0.5"
-                            />
-                          )}
-                        </div>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                  {allTeams.length > 3 && (
-                    <SidebarMenuItem>
-                      <button
-                        onClick={() => setShowAllTeams(!showAllTeams)}
-                        className="flex w-full items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-                      >
-                        <MoreHorizontal className="size-4" />
-                        <span>{showAllTeams ? 'Show less' : 'More'}</span>
-                      </button>
-                    </SidebarMenuItem>
-                  )}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          )}
+          {/* Repositories */}
+          <SidebarGroup>
+            <SidebarGroupLabel className="px-2 flex items-center gap-2">
+              <Book className="size-3.5" />
+              <span className="text-sm font-medium text-foreground">Repositories</span>
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visibleRepos.map((repo) => (
+                  <SidebarMenuItem key={repo.id}>
+                    <SidebarMenuButton
+                      className="h-8 pl-6 cursor-pointer!"
+                      onClick={() => handleSelectRepo(repo.name)}
+                      isActive={activeView === 'repo' && selectedEntityName === repo.name}
+                    >
+                      <Book className="size-3.5 text-muted-foreground" />
+                      <span className="text-sm">{repo.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                <SidebarMenuItem>
+                  <button className="pl-6 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    View all ({allRepositories.length})
+                  </button>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
 
           {/* People */}
-          {allPeople.length > 0 && (
-            <SidebarGroup>
-              <SidebarGroupLabel className="px-2 text-sm font-semibold text-muted-foreground">
-                People
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                {/* Search input */}
-                <div className="px-2 pb-2">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      value={peopleSearchQuery}
-                      onChange={(e) => setPeopleSearchQuery(e.target.value)}
-                      placeholder="Search people..."
-                      className="h-8 pl-7 pr-2 text-xs"
-                    />
-                  </div>
-                </div>
-                <SidebarMenu>
-                  {people.length === 0 ? (
-                    <SidebarMenuItem>
-                      <div className="px-2 py-4 text-center text-xs text-muted-foreground">
-                        {peopleSearchQuery.trim() || selectedTeam
-                          ? "No people found"
-                          : "No people available"}
-                      </div>
-                    </SidebarMenuItem>
-                  ) : (
-                    <>
-                  {visiblePeople.map((person) => (
-                    <SidebarMenuItem key={person.id}>
-                      <SidebarMenuButton
-                        className="relative cursor-pointer"
-                        onMouseEnter={() => handleMouseEnter('person', person.id)}
-                        onMouseLeave={handleMouseLeave}
-                      >
-                        <Image
-                          src={person.avatar}
-                          alt={person.name}
-                          width={20}
-                          height={20}
-                          className="rounded-full object-cover"
-                          unoptimized
-                        />
-                        <span className="text-sm font-medium flex-1">{person.name}</span>
-                        {isItemHovered('person', person.id) && (
-                          <BookmarkButton
-                            isFavorited={isFavorited('person', person.id)}
-                            onToggle={() => toggleFavorite('person', person.id)}
-                          />
-                        )}
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                      {people.length > 2 && (
-                        <SidebarMenuItem>
-                          <button
-                            onClick={() => setShowAllPeople(!showAllPeople)}
-                            className="flex w-full items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-                          >
-                            <MoreHorizontal className="size-4" />
-                            <span>{showAllPeople ? 'Show less' : 'More'}</span>
-                          </button>
-                        </SidebarMenuItem>
-                      )}
-                    </>
-                  )}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          )}
-
-          {/* Repositories */}
-          {allRepositories.length > 0 && (
-            <SidebarGroup>
-              <SidebarGroupLabel className="px-2 text-sm font-semibold text-muted-foreground">
-                Repositories
-              </SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {repositories.length === 0 ? (
-                    <SidebarMenuItem>
-                      <div className="px-2 py-4 text-center text-xs text-muted-foreground">
-                        {selectedTeam ? "No repositories for this team" : "No repositories available"}
-                      </div>
-                    </SidebarMenuItem>
-                  ) : (
-                    <>
-                      {visibleRepos.map((repo) => (
-                        <SidebarMenuItem key={repo.id}>
-                          <SidebarMenuButton
-                            className="relative cursor-pointer"
-                            onMouseEnter={() => handleMouseEnter('repo', repo.id)}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            <Book className="size-3" />
-                            <span className="font-mono text-sm font-medium flex-1">{repo.name}</span>
-                            {isItemHovered('repo', repo.id) && (
-                              <BookmarkButton
-                                isFavorited={isFavorited('repo', repo.id)}
-                                onToggle={() => toggleFavorite('repo', repo.id)}
-                              />
-                            )}
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      ))}
-                      {repositories.length > 2 && (
-                        <SidebarMenuItem>
-                          <button
-                            onClick={() => setShowAllRepos(!showAllRepos)}
-                            className="flex w-full items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-                          >
-                            <MoreHorizontal className="size-4" />
-                            <span>{showAllRepos ? 'Show less' : 'More'}</span>
-                          </button>
-                        </SidebarMenuItem>
-                      )}
-                    </>
-                  )}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          )}
+          <SidebarGroup>
+            <SidebarGroupLabel className="px-2 flex items-center gap-2">
+              <Users className="size-3.5" />
+              <span className="text-sm font-medium text-foreground">People</span>
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {visiblePeople.map((person) => (
+                  <SidebarMenuItem key={person.id}>
+                    <SidebarMenuButton
+                      className="h-8 pl-6 cursor-pointer!"
+                      onClick={() => handleSelectPerson(person.name)}
+                      isActive={activeView === 'person' && selectedEntityName === person.name}
+                    >
+                      <Image
+                        src={person.avatar}
+                        alt={person.name}
+                        width={20}
+                        height={20}
+                        className="rounded-full object-cover size-5"
+                        unoptimized
+                      />
+                      <span className="text-sm">{person.name}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+                <SidebarMenuItem>
+                  <button className="pl-6 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    View all ({allPeople.length})
+                  </button>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter className="border-t border-sidebar-border p-2">
@@ -804,8 +353,8 @@ export default function Home() {
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton className="h-auto w-full py-2">
                 <Image
-                  src={people.length > 0 ? people[0]!.avatar : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"}
-                  alt="User"
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+                  alt="John Doe"
                   width={32}
                   height={32}
                   className="rounded-full object-cover"
@@ -844,22 +393,46 @@ export default function Home() {
       </Sidebar>
 
       <SidebarInset>
+        {/* Search bar */}
         <header className="flex h-14 items-center gap-4 border-b px-6">
           <SidebarTrigger />
-          <div className="flex items-center gap-2">
-            <LayoutDashboard className="size-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Project Management & Task Tracking</span>
+          <div className="flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm text-muted-foreground w-full max-w-md">
+            <Search className="size-4" />
+            <span>Search or type a command</span>
+            <kbd className="ml-auto rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+              ⌘F
+            </kbd>
           </div>
         </header>
 
-        <main className="flex flex-1 flex-col items-center justify-center p-8 bg-zinc-50 dark:bg-zinc-950">
-          <div className="max-w-2xl space-y-6 text-center">
-            <h3 className="text-lg font-semibold">Clean Sidebar Navigation</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              A minimal sidebar with organization switcher at top, flat main navigation, 
-              and collapsible sections for teams, people, and repositories with &quot;Show more&quot; buttons.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-2 border-t pt-6">
+        <main className="flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950">
+          {/* Page header with title + tabs */}
+          <div className="border-b bg-white dark:bg-zinc-900 px-8 pt-8">
+            <h1 className="text-3xl font-bold tracking-tight">{displayName}</h1>
+            <p className="mt-1 text-muted-foreground">{displayDescription}</p>
+
+            {/* Tab group */}
+            <div className="mt-6 flex items-center gap-6 overflow-x-auto">
+              {currentTabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={cn(
+                    "pb-3 text-sm font-medium cursor-pointer whitespace-nowrap transition-colors border-b-2",
+                    activeTab === tab
+                      ? "border-[#171717] text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Content area */}
+          <div className="flex-1 p-8">
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
               <Button asChild variant="default" size="sm">
                 <Link href="/">Variant One</Link>
               </Button>
@@ -868,9 +441,6 @@ export default function Home() {
               </Button>
               <Button asChild variant="outline" size="sm">
                 <Link href="/variant-three">Variant Three</Link>
-              </Button>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/variant-four">One/Team</Link>
               </Button>
             </div>
           </div>

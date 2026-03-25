@@ -21,7 +21,6 @@ import {
   UserCircle,
   HelpCircle,
   LogOut,
-  Info,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -66,7 +65,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarTrigger,
 } from '@/components/animate-ui/components/radix/sidebar';
 
 type DashboardKind = 'org' | 'repo' | 'user';
@@ -160,40 +158,46 @@ const pagesByDashboard: Record<DashboardKind, PageSection[]> = {
       pages: [{ label: 'Overview', href: (id) => `/org/${id}/overview` }],
     },
     {
-      label: 'Risks & Alerts',
-      icon: ShieldAlert,
+      label: 'Performance',
+      icon: BarChart3,
       pages: [
-        { label: 'Risk Overview', href: (id) => `/org/${id}/risks` },
-        { label: 'Code Quality', href: (id) => `/org/${id}/quality` },
-        { label: 'Security', href: (id) => `/org/${id}/security` },
+        { label: 'Performance', href: (id) => `/org/${id}/performance` },
+        { label: 'SPOF', href: (id) => `/org/${id}/spof` },
+        { label: 'Outliers', href: (id) => `/org/${id}/outliers` },
+        { label: 'Benchmarks', href: (id) => `/org/${id}/benchmarks` },
       ],
     },
     {
       label: 'Workforce',
       icon: Users,
       pages: [
-        { label: 'Teams', href: (id) => `/org/${id}/teams` },
         { label: 'People', href: (id) => `/org/${id}/people` },
-        { label: 'Skills', href: (id) => `/org/${id}/skills` },
+        { label: 'Repositories', href: (id) => `/org/${id}/repositories` },
+        { label: 'Skill Gaps', href: (id) => `/org/${id}/skill-gaps` },
       ],
     },
     {
-      label: 'Repositories',
+      label: 'SkillsGraph',
       icon: GitBranch,
-      pages: [{ label: 'Repositories', href: (id) => `/org/${id}/repositories` }],
+      pages: [{ label: 'SkillsGraph', href: (id) => `/org/${id}/skillsgraph` }],
     },
     {
-      label: 'Analytics',
-      icon: BarChart3,
+      label: 'AI Consultant',
+      icon: ShieldAlert,
       pages: [
-        { label: 'Benchmarks', href: (id) => `/org/${id}/benchmarks` },
-        { label: 'Reports', href: (id) => `/org/${id}/reports` },
+        { label: 'Ask AI', href: (id) => `/org/${id}/ai-consultant` },
+        { label: 'Growth Suggestions', href: (id) => `/org/${id}/growth` },
+        { label: 'Risk Alerts', href: (id) => `/org/${id}/risk-alerts` },
       ],
     },
     {
       label: 'Settings',
       icon: Settings,
-      pages: [{ label: 'Settings', href: (id) => `/org/${id}/settings` }],
+      pages: [
+        { label: 'General', href: (id) => `/org/${id}/settings` },
+        { label: 'Integrations', href: (id) => `/org/${id}/integrations` },
+        { label: 'Notifications', href: (id) => `/org/${id}/notifications` },
+      ],
     },
   ],
   repo: [
@@ -203,22 +207,30 @@ const pagesByDashboard: Record<DashboardKind, PageSection[]> = {
       pages: [{ label: 'Overview', href: (id) => `/repo/${id}/overview` }],
     },
     {
-      label: 'Risks & Alerts',
-      icon: ShieldAlert,
+      label: 'Performance',
+      icon: BarChart3,
       pages: [
-        { label: 'Risk Overview', href: (id) => `/repo/${id}/risks` },
-        { label: 'Code Quality', href: (id) => `/repo/${id}/quality` },
+        { label: 'Performance', href: (id) => `/repo/${id}/performance` },
+        { label: 'Code Quality', href: (id) => `/repo/${id}/code-quality` },
+        { label: 'Complexity', href: (id) => `/repo/${id}/complexity` },
       ],
     },
     {
       label: 'Contributors',
       icon: User,
-      pages: [{ label: 'Contributors', href: (id) => `/repo/${id}/contributors` }],
+      pages: [
+        { label: 'Contributors', href: (id) => `/repo/${id}/contributors` },
+        { label: 'Commit Activity', href: (id) => `/repo/${id}/commit-activity` },
+        { label: 'PR Reviews', href: (id) => `/repo/${id}/pr-reviews` },
+      ],
     },
     {
-      label: 'Analytics',
-      icon: BarChart3,
-      pages: [{ label: 'Benchmarks', href: (id) => `/repo/${id}/benchmarks` }],
+      label: 'Security',
+      icon: ShieldAlert,
+      pages: [
+        { label: 'Vulnerabilities', href: (id) => `/repo/${id}/vulnerabilities` },
+        { label: 'Dependencies', href: (id) => `/repo/${id}/dependencies` },
+      ],
     },
     {
       label: 'Settings',
@@ -233,26 +245,30 @@ const pagesByDashboard: Record<DashboardKind, PageSection[]> = {
       pages: [{ label: 'Overview', href: (id) => `/user/${id}/overview` }],
     },
     {
-      label: 'Contributions',
-      icon: GitBranch,
-      pages: [
-        { label: 'Activity', href: (id) => `/user/${id}/activity` },
-        { label: 'Code Reviews', href: (id) => `/user/${id}/reviews` },
-      ],
-    },
-    {
       label: 'Performance',
       icon: BarChart3,
       pages: [
+        { label: 'Performance', href: (id) => `/user/${id}/performance` },
         { label: 'Skills', href: (id) => `/user/${id}/skills` },
-        { label: 'Benchmarks', href: (id) => `/user/${id}/benchmarks` },
-        { label: 'Quality', href: (id) => `/user/${id}/quality` },
+        { label: 'Quality Score', href: (id) => `/user/${id}/quality` },
       ],
     },
     {
-      label: 'Settings',
-      icon: Settings,
-      pages: [{ label: 'Settings', href: (id) => `/user/${id}/settings` }],
+      label: 'Activity',
+      icon: Users,
+      pages: [
+        { label: 'Activity', href: (id) => `/user/${id}/activity` },
+        { label: 'Code Reviews', href: (id) => `/user/${id}/code-reviews` },
+        { label: 'Commits', href: (id) => `/user/${id}/commits` },
+      ],
+    },
+    {
+      label: 'Growth',
+      icon: GitBranch,
+      pages: [
+        { label: 'Recommendations', href: (id) => `/user/${id}/recommendations` },
+        { label: 'Learning Path', href: (id) => `/user/${id}/learning-path` },
+      ],
     },
   ],
 };
@@ -268,147 +284,89 @@ function DashboardSwitcher({
   onSelect: (nextDashboard: DashboardKind, nextEntityId: string) => void;
   currentOrgId: string;
 }) {
-  const [open, setOpen] = React.useState(false);
-  const [activeKind, setActiveKind] = React.useState<DashboardKind>(dashboard);
-  const [highlightOrg, setHighlightOrg] = React.useState(false);
-
-  const meta = dashboardMeta[dashboard];
-  const Icon = meta.icon;
+  const [entityDropdownOpen, setEntityDropdownOpen] = React.useState(false);
   const entities = getEntitiesForOrg(currentOrgId);
 
-  React.useEffect(() => {
-    // Keep the two-panel selector aligned with the currently-selected dashboard.
-    setActiveKind(dashboard);
-  }, [dashboard, open]);
-
-  // Highlight when org changes
-  React.useEffect(() => {
-    if (dashboard === 'org') {
-      setHighlightOrg(true);
-      const timer = setTimeout(() => setHighlightOrg(false), 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [currentOrgId, dashboard]);
+  const kinds: DashboardKind[] = ['org', 'repo', 'user'];
+  const Icon = dashboardMeta[dashboard].icon;
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className={cn(
-            'w-full justify-between gap-2 h-12 px-2 transition-all',
-            highlightOrg && 'ring-2 ring-primary ring-offset-2',
-          )}
-          aria-haspopup="menu"
-          aria-expanded={open}
-        >
-          <span className="flex items-center gap-2 min-w-0">
-            <Icon className="size-4 shrink-0" />
-            <span className="truncate text-left">
-              <span className="text-sidebar-foreground/70 text-xs font-medium">
-                {meta.label}
-              </span>
-              <span className="block text-sm font-medium">{entity.name}</span>
-            </span>
-          </span>
-          <ChevronDown
-            className={cn('size-4 shrink-0 transition-transform', open && 'rotate-180')}
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        align="start"
-        className="w-fit p-0 max-h-[280px] overflow-hidden"
-        side="bottom"
-        sideOffset={4}
-      >
-        <div
-          role="menu"
-          aria-label="Switch dashboard"
-          className="bg-popover text-popover-foreground"
-        >
-          <div className="grid w-fit grid-cols-[120px_1fr] gap-5 divide-x divide-sidebar-border">
-            {/* Left: parent triggers */}
-            <div className="p-2 w-full min-w-[150px] max-h-[280px] overflow-y-auto">
-              <div className="text-sidebar-foreground/70 px-2 pb-1 text-xs font-medium">
-                Dashboards
-              </div>
-              <div className="space-y-1">
-                {(Object.keys(dashboardMeta) as DashboardKind[]).map((kind) => {
-                  const m = dashboardMeta[kind];
-                  const KIcon = m.icon;
-                  const selected = kind === activeKind;
-                  const count = entities[kind].length;
-                  return (
-                    <button
-                      key={kind}
-                      type="button"
-                      className={cn(
-                        'hover:bg-sidebar-accent flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm',
-                        selected && 'bg-sidebar-accent',
-                      )}
-                      onClick={() => setActiveKind(kind)}
-                    >
-                      <KIcon className="size-4" />
-                      <span className="font-medium flex-1">{m.label}</span>
-                      {kind !== 'org' && (
-                        <span className="text-xs text-muted-foreground">({count})</span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-              {/* Show org context */}
-              {activeKind !== 'org' && (
-                <div className="mt-2 pt-2 border-t border-sidebar-border px-2">
-                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                    <Info className="size-3" />
-                    <span>
-                      Showing {activeKind}s for{' '}
-                      {entities.org.find((o) => o.id === currentOrgId)?.name || currentOrgId}
-                    </span>
-                  </div>
-                </div>
+    <div className="space-y-1.5">
+      {/* View type tabs */}
+      <div className="flex gap-0.5 rounded-full bg-sidebar-accent p-1">
+        {kinds.map((kind) => {
+          const m = dashboardMeta[kind];
+          const isActive = kind === dashboard;
+          return (
+            <button
+              key={kind}
+              type="button"
+              onClick={() => {
+                const firstEntity = entities[kind][0];
+                if (firstEntity) onSelect(kind, firstEntity.id);
+              }}
+              className={cn(
+                'flex flex-1 items-center justify-center gap-1 rounded-full py-1.5 text-[11px] font-medium cursor-pointer transition-all',
+                isActive
+                  ? 'bg-background text-foreground shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground',
               )}
-            </div>
+            >
+              <span>{m.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-            {/* Right: children for selected parent */}
-            <div className="p-2 w-full min-w-[200px] max-h-[280px] overflow-y-auto">
-              <div className="flex w-full items-center justify-between px-2 pb-1">
-                <div className="text-sidebar-foreground/70 text-xs font-medium">
-                  {dashboardMeta[activeKind].label}
-                </div>
-                {/* {activeKind === dashboard && (
-                  <div className="text-xs text-muted-foreground">Current</div>
-                )} */}
-              </div>
-              <div className="space-y-1 px-1">
-                {entities[activeKind].map((e) => {
-                  const isCurrent = activeKind === dashboard && e.id === entity.id;
-                  return (
-                    <button
-                      key={e.id}
-                      type="button"
-                      className={cn(
-                        'hover:bg-sidebar-accent flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm',
-                        isCurrent && 'bg-sidebar-accent',
-                      )}
-                      onClick={() => {
-                        onSelect(activeKind, e.id);
-                        setOpen(false);
-                      }}
-                    >
-                      <span className="truncate">{e.name}</span>
-                      {isCurrent && <Check className="ml-auto size-4" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+      {/* Entity selector */}
+      <Popover open={entityDropdownOpen} onOpenChange={setEntityDropdownOpen}>
+        <PopoverTrigger asChild>
+          <button
+            className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-sidebar-accent transition-colors cursor-pointer"
+          >
+            <Icon className="size-4 text-muted-foreground shrink-0" />
+            <span className="truncate font-medium flex-1 text-left">{entity.name}</span>
+            <ChevronDown
+              className={cn(
+                'size-3.5 shrink-0 text-muted-foreground transition-transform',
+                entityDropdownOpen && 'rotate-180',
+              )}
+            />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          align="start"
+          className="w-[var(--radix-popover-trigger-width)] p-1"
+          side="bottom"
+          sideOffset={4}
+        >
+          <div className="max-h-[240px] overflow-y-auto space-y-0.5">
+            {entities[dashboard].map((e) => {
+              const isCurrent = e.id === entity.id;
+              return (
+                <button
+                  key={e.id}
+                  type="button"
+                  className={cn(
+                    'flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors',
+                    isCurrent
+                      ? 'bg-sidebar-accent text-foreground font-medium'
+                      : 'hover:bg-sidebar-accent/60 text-foreground',
+                  )}
+                  onClick={() => {
+                    onSelect(dashboard, e.id);
+                    setEntityDropdownOpen(false);
+                  }}
+                >
+                  <span className="truncate flex-1">{e.name}</span>
+                  {isCurrent && <Check className="size-3.5 shrink-0 text-muted-foreground" />}
+                </button>
+              );
+            })}
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
 
@@ -539,36 +497,23 @@ function VariantTwoContent() {
   return (
     <SidebarProvider>
       <Sidebar variant="sidebar" collapsible="offcanvas">
-        <SidebarHeader className="border-b border-sidebar-border">
-          <div className="flex items-center gap-2 px-2 py-1">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold">
+        <SidebarHeader className="border-b border-sidebar-border p-3 space-y-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#171717] text-white text-sm font-bold">
               GR
             </div>
-            <span className="text-lg font-semibold group-data-[collapsible=icon]:hidden">
+            <span className="text-base font-semibold group-data-[collapsible=icon]:hidden">
               GitRoll
             </span>
           </div>
-          <div className="px-1 pb-2">
-            <DashboardSwitcher
-              dashboard={dashboard}
-              entity={entity}
-              onSelect={(nextDash, nextEntityId) => {
-                setSelection(nextDash, nextEntityId, 'Overview');
-              }}
-              currentOrgId={currentOrgId}
-            />
-          </div>
-          {/* Show notification when org changes */}
-          {orgChanged && (
-            <div className="px-2 pb-2">
-              <div className="flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1.5 text-xs text-primary animate-in fade-in slide-in-from-top-2">
-                <Info className="size-3" />
-                <span>
-                  Switched to {entity.name}. People and repos updated.
-                </span>
-              </div>
-            </div>
-          )}
+          <DashboardSwitcher
+            dashboard={dashboard}
+            entity={entity}
+            onSelect={(nextDash, nextEntityId) => {
+              setSelection(nextDash, nextEntityId, 'Overview');
+            }}
+            currentOrgId={currentOrgId}
+          />
         </SidebarHeader>
 
         <SidebarContent className="overflow-y-auto">
@@ -595,8 +540,8 @@ function VariantTwoContent() {
           </div>
 
           {/* Page Sections */}
-          <SidebarGroup>
-            <SidebarMenu>
+          <SidebarGroup className="overflow-hidden">
+            <SidebarMenu className="overflow-hidden">
               {pages.map((section) => {
                 const SectionIcon = section.icon;
                 const isOpen = openSections.has(section.label);
@@ -652,20 +597,21 @@ function VariantTwoContent() {
                           />
                         </SidebarMenuButton>
                       </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenu className="ml-4 border-l pl-3 h-fit">
+                      <CollapsibleContent className="overflow-hidden">
+                        <SidebarMenu className="ml-4 border-l pl-3 h-fit w-[calc(100%-1rem)]">
                           {section.pages.map((page) => (
-                            <SidebarMenuItem key={page.label}>
+                            <SidebarMenuItem key={page.label} className="overflow-hidden">
                               <SidebarMenuButton
                                 asChild
                                 isActive={activePage === page.label}
                                 onClick={() => setSelection(dashboard, entity.id, page.label)}
+                                className="overflow-hidden"
                               >
                                 <Link
                                   href={selectionHref(dashboard, entity.id, page.label)}
-                                  className="py-1.5"
+                                  className="py-1.5 overflow-hidden"
                                 >
-                                  <span>{page.label}</span>
+                                  <span className="truncate">{page.label}</span>
                                 </Link>
                               </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -727,7 +673,6 @@ function VariantTwoContent() {
 
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b px-6">
-          <SidebarTrigger />
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -769,22 +714,137 @@ function VariantTwoContent() {
           </Breadcrumb>
         </header>
 
-        <main className="flex flex-1 flex-col items-center justify-center bg-zinc-50 p-8 dark:bg-zinc-950">
-          <h3 className="text-lg font-semibold">Dashboard content goes here</h3>
-          <p className="mt-2 max-w-xl text-center text-sm text-muted-foreground">
-            The sidebar shows different page links depending on which dashboard you’re on, and you
-            can switch dashboards/entities via the “popover” switcher at the top.
-          </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-            <Button asChild variant="outline" size="sm">
-              <Link href="/">Variant One</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/variant-two">Variant Two</Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link href="/variant-three">Variant Three</Link>
-            </Button>
+        <main className="relative flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden">
+          {/* Dashboard content behind overlay */}
+          <div className="flex-1 p-6 space-y-6 overflow-auto">
+            {/* Stat cards row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                { title: 'Performance Score', value: '72', change: '+12.5%', trend: 'up', desc: 'Trending up this month', sub: 'Across all repositories' },
+                { title: 'Critical Outliers', value: '3', change: '-20%', trend: 'down', desc: 'Down 20% this period', sub: 'Needs attention' },
+                { title: 'Active Contributors', value: '45,678', change: '+12.5%', trend: 'up', desc: 'Strong user retention', sub: 'Engagement exceeds targets' },
+                { title: 'Growth Rate', value: '4.5%', change: '+4.5%', trend: 'up', desc: 'Steady performance increase', sub: 'Meets growth projections' },
+              ].map((stat) => (
+                <div key={stat.title} className="rounded-xl border bg-white p-5 space-y-3 dark:bg-zinc-900">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">{stat.title}</span>
+                    <span className={cn(
+                      'text-xs font-medium px-1.5 py-0.5 rounded',
+                      stat.trend === 'up' ? 'text-emerald-700 bg-emerald-50' : 'text-red-700 bg-red-50',
+                    )}>{stat.change}</span>
+                  </div>
+                  <div className="text-3xl font-bold tracking-tight">{stat.value}</div>
+                  <div>
+                    <p className="text-sm font-medium">{stat.desc}</p>
+                    <p className="text-xs text-muted-foreground">{stat.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Chart area */}
+            <div className="rounded-xl border bg-white p-6 dark:bg-zinc-900">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-lg font-semibold">Performance</h3>
+                  <p className="text-sm text-muted-foreground">Total for the last 3 months</p>
+                </div>
+                <div className="flex gap-1 rounded-lg border p-0.5">
+                  {['3 months', '30 days', '7 days'].map((period) => (
+                    <button key={period} className={cn(
+                      'px-3 py-1 text-xs font-medium rounded-md transition-colors',
+                      period === '3 months' ? 'bg-zinc-100 text-foreground dark:bg-zinc-800' : 'text-muted-foreground hover:text-foreground',
+                    )}>{period}</button>
+                  ))}
+                </div>
+              </div>
+              {/* Fake chart */}
+              <div className="h-48 relative">
+                <svg viewBox="0 0 800 200" className="w-full h-full" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#171717" stopOpacity="0.15" />
+                      <stop offset="100%" stopColor="#171717" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,150 C100,120 150,80 250,60 C350,40 400,90 500,50 C600,10 700,70 800,30" fill="none" stroke="#171717" strokeWidth="2" />
+                  <path d="M0,150 C100,120 150,80 250,60 C350,40 400,90 500,50 C600,10 700,70 800,30 L800,200 L0,200 Z" fill="url(#chartGrad)" />
+                  <path d="M0,170 C100,155 200,140 300,130 C400,120 500,145 600,125 C700,105 750,110 800,90" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="4 4" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div className="rounded-xl border bg-white dark:bg-zinc-900">
+              <div className="p-4 border-b flex items-center justify-between">
+                <div className="flex gap-4">
+                  {['Outline', 'Past Performance', 'Key Personnel', 'Focus Documents'].map((tab, i) => (
+                    <span key={tab} className={cn('text-sm', i === 0 ? 'font-semibold text-foreground' : 'text-muted-foreground')}>{tab}</span>
+                  ))}
+                </div>
+              </div>
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b text-left text-sm text-muted-foreground">
+                    <th className="py-3 px-4 font-medium">Header</th>
+                    <th className="py-3 px-4 font-medium">Section Type</th>
+                    <th className="py-3 px-4 font-medium">Status</th>
+                    <th className="py-3 px-4 font-medium text-right">Target</th>
+                    <th className="py-3 px-4 font-medium">Reviewer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { header: 'Cover page', type: 'Cover page', status: 'In Process', target: 18, reviewer: 'Eddie Lake' },
+                    { header: 'Table of contents', type: 'Table of contents', status: 'Done', target: 29, reviewer: 'Eddie Lake' },
+                    { header: 'Executive summary', type: 'Narrative', status: 'Done', target: 10, reviewer: 'Eddie Lake' },
+                    { header: 'Technical approach', type: 'Narrative', status: 'Done', target: 27, reviewer: 'Jamik T.' },
+                    { header: 'Design', type: 'Narrative', status: 'In Process', target: 2, reviewer: 'Jamik T.' },
+                    { header: 'Capabilities', type: 'Narrative', status: 'In Process', target: 20, reviewer: 'Jamik T.' },
+                  ].map((row) => (
+                    <tr key={row.header} className="border-b last:border-0 text-sm">
+                      <td className="py-3 px-4 font-medium">{row.header}</td>
+                      <td className="py-3 px-4"><span className="rounded border px-2 py-0.5 text-xs text-muted-foreground">{row.type}</span></td>
+                      <td className="py-3 px-4">
+                        <span className={cn(
+                          'inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs',
+                          row.status === 'Done' ? 'text-emerald-700' : 'text-muted-foreground',
+                        )}>
+                          {row.status === 'Done' && <span className="size-1.5 rounded-full bg-emerald-500" />}
+                          {row.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-right">{row.target}</td>
+                      <td className="py-3 px-4 text-muted-foreground">{row.reviewer}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Overlay */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/30 backdrop-blur-[1px] dark:bg-zinc-950/30">
+            <div className="max-w-md text-center space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-muted-foreground dark:bg-zinc-800">
+                Sidebar Navigation Variants
+              </div>
+              <h2 className="text-2xl font-bold tracking-tight">Variant Two</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Collapsible sidebar with segmented view switcher, nested page sections, and entity-scoped navigation.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/">Variant One</Link>
+                </Button>
+                <Button asChild size="sm" className="bg-[#171717] text-white hover:bg-[#171717]/90">
+                  <Link href="/variant-two">Variant Two</Link>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/variant-three">Variant Three</Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </main>
       </SidebarInset>

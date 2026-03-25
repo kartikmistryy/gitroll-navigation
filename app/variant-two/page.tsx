@@ -25,6 +25,7 @@ import {
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils';
+import { DashboardContent } from '@/components/dashboard-content';
 import { Button } from '@/components/ui/button';
 import {
   Breadcrumb,
@@ -716,112 +717,7 @@ function VariantTwoContent() {
 
         <main className="relative flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950 overflow-hidden">
           {/* Dashboard content behind overlay */}
-          <div className="flex-1 p-6 space-y-6 overflow-auto">
-            {/* Stat cards row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { title: 'Performance Score', value: '72', change: '+12.5%', trend: 'up', desc: 'Trending up this month', sub: 'Across all repositories' },
-                { title: 'Critical Outliers', value: '3', change: '-20%', trend: 'down', desc: 'Down 20% this period', sub: 'Needs attention' },
-                { title: 'Active Contributors', value: '45,678', change: '+12.5%', trend: 'up', desc: 'Strong user retention', sub: 'Engagement exceeds targets' },
-                { title: 'Growth Rate', value: '4.5%', change: '+4.5%', trend: 'up', desc: 'Steady performance increase', sub: 'Meets growth projections' },
-              ].map((stat) => (
-                <div key={stat.title} className="rounded-xl border bg-white p-5 space-y-3 dark:bg-zinc-900">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">{stat.title}</span>
-                    <span className={cn(
-                      'text-xs font-medium px-1.5 py-0.5 rounded',
-                      stat.trend === 'up' ? 'text-emerald-700 bg-emerald-50' : 'text-red-700 bg-red-50',
-                    )}>{stat.change}</span>
-                  </div>
-                  <div className="text-3xl font-bold tracking-tight">{stat.value}</div>
-                  <div>
-                    <p className="text-sm font-medium">{stat.desc}</p>
-                    <p className="text-xs text-muted-foreground">{stat.sub}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Chart area */}
-            <div className="rounded-xl border bg-white p-6 dark:bg-zinc-900">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-semibold">Performance</h3>
-                  <p className="text-sm text-muted-foreground">Total for the last 3 months</p>
-                </div>
-                <div className="flex gap-1 rounded-lg border p-0.5">
-                  {['3 months', '30 days', '7 days'].map((period) => (
-                    <button key={period} className={cn(
-                      'px-3 py-1 text-xs font-medium rounded-md transition-colors',
-                      period === '3 months' ? 'bg-zinc-100 text-foreground dark:bg-zinc-800' : 'text-muted-foreground hover:text-foreground',
-                    )}>{period}</button>
-                  ))}
-                </div>
-              </div>
-              {/* Fake chart */}
-              <div className="h-48 relative">
-                <svg viewBox="0 0 800 200" className="w-full h-full" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#171717" stopOpacity="0.15" />
-                      <stop offset="100%" stopColor="#171717" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M0,150 C100,120 150,80 250,60 C350,40 400,90 500,50 C600,10 700,70 800,30" fill="none" stroke="#171717" strokeWidth="2" />
-                  <path d="M0,150 C100,120 150,80 250,60 C350,40 400,90 500,50 C600,10 700,70 800,30 L800,200 L0,200 Z" fill="url(#chartGrad)" />
-                  <path d="M0,170 C100,155 200,140 300,130 C400,120 500,145 600,125 C700,105 750,110 800,90" fill="none" stroke="#a1a1aa" strokeWidth="1.5" strokeDasharray="4 4" />
-                </svg>
-              </div>
-            </div>
-
-            {/* Table */}
-            <div className="rounded-xl border bg-white dark:bg-zinc-900">
-              <div className="p-4 border-b flex items-center justify-between">
-                <div className="flex gap-4">
-                  {['Outline', 'Past Performance', 'Key Personnel', 'Focus Documents'].map((tab, i) => (
-                    <span key={tab} className={cn('text-sm', i === 0 ? 'font-semibold text-foreground' : 'text-muted-foreground')}>{tab}</span>
-                  ))}
-                </div>
-              </div>
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b text-left text-sm text-muted-foreground">
-                    <th className="py-3 px-4 font-medium">Header</th>
-                    <th className="py-3 px-4 font-medium">Section Type</th>
-                    <th className="py-3 px-4 font-medium">Status</th>
-                    <th className="py-3 px-4 font-medium text-right">Target</th>
-                    <th className="py-3 px-4 font-medium">Reviewer</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { header: 'Cover page', type: 'Cover page', status: 'In Process', target: 18, reviewer: 'Eddie Lake' },
-                    { header: 'Table of contents', type: 'Table of contents', status: 'Done', target: 29, reviewer: 'Eddie Lake' },
-                    { header: 'Executive summary', type: 'Narrative', status: 'Done', target: 10, reviewer: 'Eddie Lake' },
-                    { header: 'Technical approach', type: 'Narrative', status: 'Done', target: 27, reviewer: 'Jamik T.' },
-                    { header: 'Design', type: 'Narrative', status: 'In Process', target: 2, reviewer: 'Jamik T.' },
-                    { header: 'Capabilities', type: 'Narrative', status: 'In Process', target: 20, reviewer: 'Jamik T.' },
-                  ].map((row) => (
-                    <tr key={row.header} className="border-b last:border-0 text-sm">
-                      <td className="py-3 px-4 font-medium">{row.header}</td>
-                      <td className="py-3 px-4"><span className="rounded border px-2 py-0.5 text-xs text-muted-foreground">{row.type}</span></td>
-                      <td className="py-3 px-4">
-                        <span className={cn(
-                          'inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs',
-                          row.status === 'Done' ? 'text-emerald-700' : 'text-muted-foreground',
-                        )}>
-                          {row.status === 'Done' && <span className="size-1.5 rounded-full bg-emerald-500" />}
-                          {row.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">{row.target}</td>
-                      <td className="py-3 px-4 text-muted-foreground">{row.reviewer}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <DashboardContent pageKey={activePage} gradientId="cg2" />
 
           {/* Overlay */}
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/30 backdrop-blur-[1px] dark:bg-zinc-950/30">

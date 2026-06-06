@@ -1,0 +1,5 @@
+I did some agent operations like I made the claude agent do some changes and also commits, now how do i get this info on the overview page of https://entire.io/overview ? also can you give a short flow and one liner short desc of all the "entire commands"
+
+---
+
+entire status

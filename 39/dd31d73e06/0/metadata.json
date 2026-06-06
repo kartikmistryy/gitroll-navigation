@@ -1,0 +1,46 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "39dd31d73e06",
+  "session_id": "21b8ee5e-8da2-4a19-95b9-5ae1f0dc472c",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-06T20:23:52.162289Z",
+  "branch": "feat/skillforge-dashboard",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "app/(dashboard)/hackathon/page.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "e3503251df0d",
+  "token_usage": {
+    "input_tokens": 18604,
+    "cache_creation_tokens": 54283,
+    "cache_read_tokens": 235545,
+    "output_tokens": 3994,
+    "api_call_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-06T20:23:52.157513Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 100,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 100,
+    "total_lines_changed": 100,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 20,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 20
+      }
+    }
+  ]
+}

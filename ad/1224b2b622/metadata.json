@@ -3,7 +3,7 @@
   "checkpoint_id": "ad1224b2b622",
   "strategy": "manual-commit",
   "branch": "feat/skillforge-dashboard",
-  "checkpoints_count": 0,
+  "checkpoints_count": 1,
   "files_touched": [
     "app/(dashboard)/page.tsx"
   ],
@@ -13,13 +13,19 @@
       "transcript": "/ad/1224b2b622/0/full.jsonl",
       "content_hash": "/ad/1224b2b622/0/content_hash.txt",
       "prompt": ""
+    },
+    {
+      "metadata": "/ad/1224b2b622/1/metadata.json",
+      "transcript": "/ad/1224b2b622/1/full.jsonl",
+      "content_hash": "/ad/1224b2b622/1/content_hash.txt",
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 137,
-    "cache_creation_tokens": 62621,
-    "cache_read_tokens": 169977,
-    "output_tokens": 1812,
-    "api_call_count": 4
+    "input_tokens": 20204,
+    "cache_creation_tokens": 314050,
+    "cache_read_tokens": 10650124,
+    "output_tokens": 68215,
+    "api_call_count": 99
   }
 }

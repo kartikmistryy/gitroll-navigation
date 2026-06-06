@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "83177a82ef6e",
+  "session_id": "21b8ee5e-8da2-4a19-95b9-5ae1f0dc472c",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-06T20:26:19.660776Z",
+  "branch": "feat/skillforge-dashboard",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "app/(dashboard)/hackathon/page.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "e3503251df0d",
+  "checkpoint_transcript_start": 52,
+  "transcript_lines_at_start": 52,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-06T20:26:19.656924Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 3,
+    "human_removed": 0,
+    "total_committed": 0,
+    "total_lines_changed": 3,
+    "agent_percentage": 0,
+    "metric_version": 2
+  }
+}

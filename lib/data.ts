@@ -289,7 +289,7 @@ export const pastHackathons: PastHackathon[] = [
   },
   {
     name: "BuildSprint 2025",
-    date: "Mar 2026",
+    date: "Mar 2025",
     placement: "Finalist",
     project: "LocalFirst Sync Engine",
   },

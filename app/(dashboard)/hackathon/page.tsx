@@ -30,11 +30,11 @@ export default function HackathonPage() {
         {/* Meta row */}
         <div className="mt-4 flex items-center gap-5 text-xs text-label-secondary">
           <span className="flex items-center gap-1.5">
-            <Calendar size={14} />
+            <Calendar size={14} aria-hidden="true" />
             {featured.date}
           </span>
           <span className="flex items-center gap-1.5">
-            <MapPin size={14} />
+            <MapPin size={14} aria-hidden="true" />
             {featured.format}
           </span>
         </div>
@@ -84,7 +84,7 @@ export default function HackathonPage() {
               <li key={p.name} className="px-5 py-4 flex items-center gap-4">
                 <Badge tone={placementTone(p.placement)}>{p.placement}</Badge>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium">{p.name}</p>
+                  <p className="text-sm font-medium truncate">{p.name}</p>
                   <p className="text-xs text-label-secondary mt-0.5">{p.project}</p>
                 </div>
                 <span className="text-xs text-label-tertiary whitespace-nowrap">

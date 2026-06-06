@@ -1,0 +1,9 @@
+https://entire.io/overview what is this page, and how can i have my data onto thsi page?
+
+---
+
+alright, turn this project into a very neat, clean and minimal dashboard, with a overall identity like a iOS product, with rounded edges to buttons and action triggers, iOS blue as the accent color, have a clean interactive sidebar with branding at top, then 4 main navigation links like Overview, Assignments, Skills, Hackathon with icons and each having their specific individual page,
+
+---
+
+yes go on

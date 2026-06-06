@@ -1,0 +1,25 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "10a9eae90336",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "docs/superpowers/specs/2026-06-07-skillforge-dashboard-design.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/10/a9eae90336/0/metadata.json",
+      "transcript": "/10/a9eae90336/0/full.jsonl",
+      "content_hash": "/10/a9eae90336/0/content_hash.txt",
+      "prompt": "/10/a9eae90336/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 154,
+    "cache_creation_tokens": 75743,
+    "cache_read_tokens": 800563,
+    "output_tokens": 9311,
+    "api_call_count": 13
+  }
+}

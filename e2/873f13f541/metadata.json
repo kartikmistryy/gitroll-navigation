@@ -1,0 +1,23 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "e2873f13f541",
+  "strategy": "manual-commit",
+  "branch": "feat/skillforge-dashboard",
+  "checkpoints_count": 1,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/e2/873f13f541/0/metadata.json",
+      "transcript": "/e2/873f13f541/0/full.jsonl",
+      "content_hash": "/e2/873f13f541/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 19343,
+    "cache_creation_tokens": 212179,
+    "cache_read_tokens": 6181329,
+    "output_tokens": 55711,
+    "api_call_count": 70
+  }
+}

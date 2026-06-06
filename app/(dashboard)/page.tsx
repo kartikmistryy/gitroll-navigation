@@ -61,13 +61,13 @@ export default function OverviewPage() {
       {/* Two-column row */}
       <div className="mt-4 grid gap-4 lg:grid-cols-5">
         {/* Left: This week chart */}
-        <Card className="p-5 lg:col-span-3">
+        <Card className="p-5 lg:col-span-3 flex flex-col">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">This week</h2>
             <span className="text-xs text-label-tertiary">{totalLabel}</span>
           </div>
 
-          <div className="mt-4 flex h-36 gap-3">
+          <div className="mt-4 flex flex-1 min-h-36 gap-3">
             {weeklyActivity.map((entry) => {
               const isMax = entry.hours === maxHours;
               const heightPct = `${(entry.hours / 8) * 100}%`;
@@ -76,9 +76,9 @@ export default function OverviewPage() {
                   key={entry.day}
                   className="flex-1 flex flex-col items-center gap-2"
                 >
-                  <div className="w-full flex-1 flex items-end">
+                  <div className="w-full flex-1 flex items-end justify-center">
                     <div
-                      className={`w-full rounded-full ${isMax ? "bg-accent" : "bg-accent/30"}`}
+                      className={`w-9 rounded-full ${isMax ? "bg-accent" : "bg-accent/30"}`}
                       style={{
                         height: heightPct,
                         minHeight: 6,

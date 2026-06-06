@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "ad1224b2b622",
+  "session_id": "21b8ee5e-8da2-4a19-95b9-5ae1f0dc472c",
+  "strategy": "manual-commit",
+  "created_at": "2026-06-06T20:31:29.739549Z",
+  "branch": "feat/skillforge-dashboard",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "app/(dashboard)/page.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "0c1a16f7236f",
+  "checkpoint_transcript_start": 59,
+  "transcript_lines_at_start": 59,
+  "token_usage": {
+    "input_tokens": 137,
+    "cache_creation_tokens": 62621,
+    "cache_read_tokens": 169977,
+    "output_tokens": 1812,
+    "api_call_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-06-06T20:31:29.733057Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 4,
+    "human_removed": 0,
+    "total_committed": 0,
+    "total_lines_changed": 4,
+    "agent_percentage": 0,
+    "metric_version": 2
+  }
+}

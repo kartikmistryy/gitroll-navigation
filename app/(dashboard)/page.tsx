@@ -67,7 +67,7 @@ export default function OverviewPage() {
             <span className="text-xs text-label-tertiary">{totalLabel}</span>
           </div>
 
-          <div className="h-36 flex items-end gap-3 mt-4">
+          <div className="mt-4 flex h-36 gap-3">
             {weeklyActivity.map((entry) => {
               const isMax = entry.hours === maxHours;
               const heightPct = `${(entry.hours / 8) * 100}%`;
@@ -76,7 +76,7 @@ export default function OverviewPage() {
                   key={entry.day}
                   className="flex-1 flex flex-col items-center gap-2"
                 >
-                  <div className="w-full h-full flex items-end">
+                  <div className="w-full flex-1 flex items-end">
                     <div
                       className={`w-full rounded-full ${isMax ? "bg-accent" : "bg-accent/30"}`}
                       style={{

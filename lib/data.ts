@@ -116,8 +116,8 @@ export const recentActivity: ActivityItem[] = [
     type: "skill",
   },
   {
-    title: "Registered for BuildSprint 2026",
-    detail: "Online — Jun 26–28",
+    title: "Registered for OpenSource Sprint",
+    detail: "Online — Jul 25–27",
     time: "Yesterday",
     type: "hackathon",
   },
@@ -258,7 +258,6 @@ export const upcomingHackathons: Hackathon[] = [
     date: "Jun 26–28, 2026",
     format: "Online",
     theme: "Dev Tools for the AI Age",
-    registered: true,
   },
   {
     id: "h2",

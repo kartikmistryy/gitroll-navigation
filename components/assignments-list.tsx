@@ -7,6 +7,7 @@ import type { LucideProps } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { BadgeTone } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import type { Assignment, AssignmentStatus } from "@/lib/data";
 
@@ -24,8 +25,6 @@ const segments: { value: "all" | AssignmentStatus; label: string }[] = [
 // ---------------------------------------------------------------------------
 // Status config — keeps row JSX clean
 // ---------------------------------------------------------------------------
-
-type BadgeTone = "blue" | "green" | "orange" | "gray";
 
 interface StatusConfig {
   tileClass: string;

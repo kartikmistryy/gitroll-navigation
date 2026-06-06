@@ -1,11 +1,10 @@
 import { PageHeader } from "@/components/ui/page-header";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { BadgeTone } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { skills } from "@/lib/data";
 import type { SkillLevel } from "@/lib/data";
-
-type BadgeTone = "blue" | "green" | "orange" | "gray";
 
 const levelTone: Record<SkillLevel, BadgeTone> = {
   Beginner: "gray",

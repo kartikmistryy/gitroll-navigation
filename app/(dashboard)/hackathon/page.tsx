@@ -2,11 +2,10 @@ import { Calendar, MapPin } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import type { BadgeTone } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { upcomingHackathons, pastHackathons } from "@/lib/data";
 import type { Hackathon, PastHackathon } from "@/lib/data";
-
-type BadgeTone = "blue" | "green" | "orange" | "gray";
 
 function placementTone(placement: string): BadgeTone {
   if (placement === "1st Place") return "green";
@@ -14,9 +13,8 @@ function placementTone(placement: string): BadgeTone {
   return "gray";
 }
 
-const [featured, ...others] = upcomingHackathons;
-
 export default function HackathonPage() {
+  const [featured, ...others] = upcomingHackathons;
   return (
     <div>
       <PageHeader title="Hackathon" subtitle="Compete, build, ship." />

@@ -1,8 +1,8 @@
-import React from "react";
+import type { ReactNode } from "react";
 
-type Tone = "blue" | "green" | "orange" | "gray";
+export type BadgeTone = "blue" | "green" | "orange" | "gray";
 
-const toneClasses: Record<Tone, string> = {
+const toneClasses: Record<BadgeTone, string> = {
   blue: "bg-accent-soft text-accent",
   green: "bg-[#34C759]/10 text-[#34C759]",
   orange: "bg-[#FF9500]/10 text-[#FF9500]",
@@ -13,8 +13,8 @@ export function Badge({
   tone,
   children,
 }: {
-  tone: Tone;
-  children: React.ReactNode;
+  tone: BadgeTone;
+  children: ReactNode;
 }) {
   return (
     <span

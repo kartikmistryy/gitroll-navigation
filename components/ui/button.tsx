@@ -1,4 +1,4 @@
-import React from "react";
+import type { ReactNode } from "react";
 
 type Variant = "primary" | "tinted";
 
@@ -12,7 +12,7 @@ export function Button({
   variant = "primary",
   className,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: Variant;
   className?: string;
 }) {

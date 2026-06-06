@@ -1,4 +1,4 @@
-import React from "react";
+import type { ReactNode } from "react";
 import { Card } from "./card";
 
 export function StatCard({
@@ -7,7 +7,7 @@ export function StatCard({
   label,
   sub,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   value: string;
   label: string;
   sub: string;

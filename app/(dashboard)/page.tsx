@@ -19,7 +19,7 @@ const iconMap: Record<Stat["icon"], ComponentType<LucideProps>> = {
 // Format total hours: drop trailing ".0"
 function formatHours(total: number): string {
   const rounded = Math.round(total * 10) / 10;
-  return rounded % 1 === 0 ? `${rounded} hrs` : `${rounded} hrs`;
+  return `${rounded} hrs`;
 }
 
 // Dot color by activity type

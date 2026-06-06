@@ -1,0 +1,26 @@
+entire status
+● Enabled · manual-commit · branch feat/skillforge-dashboard
+  Agents · Claude Code
+
+── Active Sessions ─────────────────────────────────────────────────────────────
+
+Claude Code · 21b8ee5e-8da2-4a19-95b9-5ae1f0dc472c
+> "entire status"
+started just now
+
+Claude Code (claude-opus-4-8[1m]) · 778c21c0-98ea-43dc-a2f4-bcb326446b53
+> "2"
+started 52m ago · active 29m ago · tokens 6468.6k
+
+
+entire activity
+
+THROUGHPUT                │ ITERATION                 │ CONTINUITY                │ STREAK
+0.0k                      │ 0.0x                      │ 0.0h                      │ 0 day
+Avg. tokens/checkpoint    │ Avg sessions/checkpoint   │ Peak session length       │ 0 current
+
+CONTRIBUTIONS
+  No activity data
+
+
+why do is till dont see any activity on the web overview dashboard, the changes are made on the feat/skillforge-dashboard, is it because of that?

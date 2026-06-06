@@ -82,12 +82,17 @@ export function AssignmentsList({
   return (
     <div>
       {/* Segmented control */}
-      <div className="inline-flex rounded-full bg-fill p-1 gap-1">
+      <div
+        className="inline-flex rounded-full bg-fill p-1 gap-1"
+        role="group"
+        aria-label="Filter assignments"
+      >
         {segments.map((seg) => (
           <button
             key={seg.value}
             type="button"
             onClick={() => setFilter(seg.value)}
+            aria-pressed={filter === seg.value}
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
               filter === seg.value
                 ? "bg-card shadow-card text-label"

@@ -1,0 +1,55 @@
+{
+  "cli_version": "0.7.5",
+  "checkpoint_id": "3386e527b161",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "CLAUDE.md",
+    "app/globals.css",
+    "app/layout.tsx",
+    "app/page.tsx",
+    "app/variant-three/page.tsx",
+    "app/variant-two/page.tsx",
+    "components.json",
+    "components/animate-ui/components/animate/tooltip.tsx",
+    "components/animate-ui/components/radix/sheet.tsx",
+    "components/animate-ui/components/radix/sidebar.tsx",
+    "components/animate-ui/primitives/animate/slot.tsx",
+    "components/animate-ui/primitives/animate/tooltip.tsx",
+    "components/animate-ui/primitives/effects/highlight.tsx",
+    "components/animate-ui/primitives/radix/checkbox.tsx",
+    "components/animate-ui/primitives/radix/sheet.tsx",
+    "components/dashboard-content.tsx",
+    "components/ui/breadcrumb.tsx",
+    "components/ui/button.tsx",
+    "components/ui/collapsible.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/ui/input.tsx",
+    "components/ui/popover.tsx",
+    "components/ui/separator.tsx",
+    "components/ui/skeleton.tsx",
+    "hooks/use-controlled-state.tsx",
+    "hooks/use-mobile.ts",
+    "lib/get-strict-context.tsx",
+    "lib/utils.ts",
+    "next.config.ts",
+    "package-lock.json",
+    "package.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/33/86e527b161/0/metadata.json",
+      "transcript": "/33/86e527b161/0/full.jsonl",
+      "content_hash": "/33/86e527b161/0/content_hash.txt",
+      "prompt": "/33/86e527b161/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 18722,
+    "cache_creation_tokens": 58364,
+    "cache_read_tokens": 785960,
+    "output_tokens": 6527,
+    "api_call_count": 16
+  }
+}

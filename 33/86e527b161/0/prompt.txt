@@ -1,0 +1,1 @@
+clear whole project and reset it into a fresh nextjs ts project
